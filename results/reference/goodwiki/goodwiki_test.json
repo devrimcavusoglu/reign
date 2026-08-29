@@ -1,0 +1,480 @@
+{
+ "_what": "Aggregate reference metrics for the GoodWiki-Long test split (paper Table 2 and Table 7). Aggregate metrics only; this file carries no per-query blocks. Diff the `metrics_pct` block of a `main-goodwiki` output against the matching row here; `paper_value` is the nDCG@10 printed in the paper.",
+ "_protocol": "Identical for every row: split=test, top_k=10, 5,854 queries against the full 53,562-document corpus, self-matches removed, exponential graded gains (2^rel - 1). Metrics are percentages; `paper_value` is nDCG@10 as printed in the paper.",
+ "_dataset_note": "Runs recorded either the Hub id `devrim/goodwiki_long_synthetic_ir` or the local on-disk copy path `data/goodwiki_long_synthetic_ir`; both are the same released dataset, and every row scores the same 5,854/53,562 pools.",
+ "_stride_note": "Paper Table 2 reports the best-performing stride per Guidance Network, so strides differ across rows. A `stride` of null means the run predates stride being recorded in the result schema.",
+ "table_2_goodwiki_long_test": [
+  {
+   "system": "BM25",
+   "source_artifact": "results/sparse_bm25_test.json",
+   "dataset": "data/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 89.6054,
+    "P@10": 13.9964,
+    "R@10": 69.9821,
+    "MAP@10": 78.5993,
+    "nDCG@10": 76.8159
+   },
+   "paper_value": 76.82
+  },
+  {
+   "system": "TF-IDF",
+   "source_artifact": "results/sparse_tfidf_test.json",
+   "dataset": "data/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 93.0304,
+    "P@10": 12.0294,
+    "R@10": 60.1469,
+    "MAP@10": 86.9479,
+    "nDCG@10": 74.1897
+   },
+   "paper_value": 74.19
+  },
+  {
+   "system": "BGE-M3 (native long-context)",
+   "source_artifact": "results/dense_bge-m3_test_fp16_topk10.json",
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 79.4072,
+    "P@10": 10.6807,
+    "R@10": 53.4037,
+    "MAP@10": 84.2359,
+    "nDCG@10": 67.2051
+   },
+   "paper_value": 67.21
+  },
+  {
+   "system": "Jina-Embeddings-v3 (native long-context)",
+   "source_artifact": "results/dense_jina-v3_test_topk10.json",
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 66.6382,
+    "P@10": 11.2649,
+    "R@10": 56.3247,
+    "MAP@10": 74.4978,
+    "nDCG@10": 63.9281
+   },
+   "paper_value": 63.93
+  },
+  {
+   "system": "Stella-en-1.5B-v5 (native long-context)",
+   "source_artifact": "results/dense_stella-1.5b_test_topk10.json",
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 67.2275,
+    "P@10": 11.581,
+    "R@10": 57.9049,
+    "MAP@10": 70.8875,
+    "nDCG@10": 63.6619
+   },
+   "paper_value": 63.66
+  },
+  {
+   "system": "Nomic-Embed-v1.5 (native long-context)",
+   "source_artifact": "results/dense_nomic-v1.5_test_fp16_topk10.json",
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 10.9583,
+    "P@10": 2.0166,
+    "R@10": 10.0828,
+    "MAP@10": 13.6106,
+    "nDCG@10": 11.0501
+   },
+   "paper_value": 11.05
+  },
+  {
+   "system": "GTE-small (truncated 512)",
+   "source_artifact": "results/dense_gte-small-trunc_test.json",
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 67.1848,
+    "P@10": 10.1802,
+    "R@10": 50.9011,
+    "MAP@10": 79.6804,
+    "nDCG@10": 62.3721
+   },
+   "paper_value": 62.37
+  },
+  {
+   "system": "GTE-base (truncated 512)",
+   "source_artifact": "results/dense_gte-base-trunc_test.json",
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 71.0113,
+    "P@10": 10.0803,
+    "R@10": 50.4014,
+    "MAP@10": 82.4348,
+    "nDCG@10": 63.4827
+   },
+   "paper_value": 63.48
+  },
+  {
+   "system": "GTE-large (truncated 512)",
+   "source_artifact": "results/dense_gte-large-trunc_test.json",
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 71.0625,
+    "P@10": 10.1196,
+    "R@10": 50.5979,
+    "MAP@10": 82.3284,
+    "nDCG@10": 63.5828
+   },
+   "paper_value": 63.58
+  },
+  {
+   "system": "BGE-base (truncated 512)",
+   "source_artifact": "results/dense_bge-base-trunc_test.json",
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 66.6382,
+    "P@10": 10.041,
+    "R@10": 50.205,
+    "MAP@10": 79.8414,
+    "nDCG@10": 61.9452
+   },
+   "paper_value": 61.95
+  },
+  {
+   "system": "BGE-large (truncated 512)",
+   "source_artifact": "results/dense_bge-large-trunc_test.json",
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 69.8155,
+    "P@10": 10.1196,
+    "R@10": 50.5979,
+    "MAP@10": 81.4301,
+    "nDCG@10": 63.1189
+   },
+   "paper_value": 63.12
+  },
+  {
+   "system": "GTE-small (chunked mean-pool 512)",
+   "source_artifact": "results/dense_gte-small-chunked_test.json",
+   "chunk_size": 512,
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 75.3416,
+    "P@10": 10.515,
+    "R@10": 52.5752,
+    "MAP@10": 81.3056,
+    "nDCG@10": 65.102
+   },
+   "paper_value": 65.1
+  },
+  {
+   "system": "GTE-base (chunked mean-pool 512)",
+   "source_artifact": "results/dense_gte-base-chunked_test.json",
+   "chunk_size": 512,
+   "dataset": "data/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 76.0762,
+    "P@10": 10.4407,
+    "R@10": 52.2036,
+    "MAP@10": 82.4357,
+    "nDCG@10": 65.3571
+   },
+   "paper_value": 65.36
+  },
+  {
+   "system": "GTE-large (chunked mean-pool 512)",
+   "source_artifact": "results/dense_gte-large-chunked_test.json",
+   "chunk_size": 512,
+   "dataset": "data/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 77.1524,
+    "P@10": 10.5159,
+    "R@10": 52.5794,
+    "MAP@10": 83.1618,
+    "nDCG@10": 65.9379
+   },
+   "paper_value": 65.94
+  },
+  {
+   "system": "BGE-base (chunked mean-pool 512)",
+   "source_artifact": "results/dense_bge-base-chunked_test.json",
+   "chunk_size": 512,
+   "dataset": "data/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 73.6761,
+    "P@10": 10.3434,
+    "R@10": 51.7168,
+    "MAP@10": 80.5835,
+    "nDCG@10": 64.0684
+   },
+   "paper_value": 64.07
+  },
+  {
+   "system": "BGE-large (chunked mean-pool 512)",
+   "source_artifact": "results/dense_bge-large-chunked_test.json",
+   "chunk_size": 512,
+   "dataset": "data/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 75.1708,
+    "P@10": 10.3929,
+    "R@10": 51.9645,
+    "MAP@10": 81.703,
+    "nDCG@10": 64.7907
+   },
+   "paper_value": 64.79
+  },
+  {
+   "system": "REIGN base-l3 + GTE-small @s384",
+   "source_artifact": "results/reign-base-l3_gte-small_s384_test_topk10.json",
+   "checkpoint": "reign-base-l3_gn-gte-small_s384_val-selected",
+   "gn_model": "thenlper/gte-small",
+   "chunk_size": 512,
+   "stride": 384,
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 74.2569,
+    "P@10": 11.698,
+    "R@10": 58.4899,
+    "MAP@10": 77.6278,
+    "nDCG@10": 67.3102
+   },
+   "paper_value": 67.31
+  },
+  {
+   "system": "REIGN base-l3 + GTE-base @s384",
+   "source_artifact": "results/reign-base-l3_gte-base_test.json",
+   "checkpoint": "reign-base-l3_gn-gte-base_val-selected",
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": 384,
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 73.1978,
+    "P@10": 11.1795,
+    "R@10": 55.8977,
+    "MAP@10": 78.6481,
+    "nDCG@10": 66.0315
+   },
+   "paper_value": 66.03
+  },
+  {
+   "system": "REIGN base-l3 + GTE-large",
+   "source_artifact": "results/reign-base-l3_gte-large_test.json",
+   "checkpoint": "reign-base-l3_gn-gte-large_val-selected",
+   "gn_model": "thenlper/gte-large",
+   "chunk_size": 512,
+   "stride": null,
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 75.2562,
+    "P@10": 11.1428,
+    "R@10": 55.714,
+    "MAP@10": 80.2793,
+    "nDCG@10": 66.7262
+   },
+   "paper_value": 66.73
+  },
+  {
+   "system": "REIGN base-l3 + BGE-base @s384",
+   "source_artifact": "results/reign-base-l3_bge-base_test.json",
+   "checkpoint": "reign-base-l3_gn-bge-base_val-selected",
+   "gn_model": "BAAI/bge-base-en-v1.5",
+   "chunk_size": 512,
+   "stride": 384,
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 71.4554,
+    "P@10": 11.1334,
+    "R@10": 55.6671,
+    "MAP@10": 77.3384,
+    "nDCG@10": 65.1728
+   },
+   "paper_value": 65.17
+  },
+  {
+   "system": "REIGN base-l3 + BGE-large",
+   "source_artifact": "results/reign-base-l3_bge-large_test.json",
+   "checkpoint": "reign-base-l3_gn-bge-large_val-selected",
+   "gn_model": "BAAI/bge-large-en-v1.5",
+   "chunk_size": 512,
+   "stride": null,
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 75.8968,
+    "P@10": 10.9592,
+    "R@10": 54.7959,
+    "MAP@10": 80.8329,
+    "nDCG@10": 66.4535
+   },
+   "paper_value": 66.45
+  }
+ ],
+ "table_2_companion_runs": [
+  {
+   "system": "REIGN base-l3 + GTE-small @s512",
+   "source_artifact": "results/reign-base-l3_gte-small_s512_test_topk10.json",
+   "checkpoint": "reign-base-l3_gn-gte-small_s512_val-selected",
+   "gn_model": "thenlper/gte-small",
+   "chunk_size": 512,
+   "stride": 512,
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 74.4961,
+    "P@10": 11.5126,
+    "R@10": 57.5632,
+    "MAP@10": 78.5517,
+    "nDCG@10": 67.0886
+   },
+   "paper_value": 67.09
+  }
+ ],
+ "table_7_encoder_capacity_sweep": [
+  {
+   "system": "REIGN tiny-l1 + GTE-small @s384",
+   "source_artifact": "results/reign-tiny-l1_gte-small_s384_test_topk10.json",
+   "checkpoint": "reign-tiny-l1_gn-gte-small_s384_val-selected",
+   "gn_model": "thenlper/gte-small",
+   "chunk_size": 512,
+   "stride": 384,
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 71.8996,
+    "P@10": 10.8985,
+    "R@10": 54.4927,
+    "MAP@10": 77.3392,
+    "nDCG@10": 64.4611
+   },
+   "paper_value": 64.46
+  },
+  {
+   "system": "REIGN tiny-l1 + GTE-base @s384",
+   "source_artifact": "results/reign-tiny-l1_gte-base_test.json",
+   "checkpoint": "reign-tiny-l1_gn-gte-base_val-selected",
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": 384,
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 69.5337,
+    "P@10": 10.8387,
+    "R@10": 54.1937,
+    "MAP@10": 76.5043,
+    "nDCG@10": 63.7026
+   },
+   "paper_value": 63.7
+  },
+  {
+   "system": "REIGN tiny-l1 + GTE-large @s384",
+   "source_artifact": "results/reign-tiny-l1_gte-large_test.json",
+   "checkpoint": "reign-tiny-l1_gn-gte-large_val-selected",
+   "gn_model": "thenlper/gte-large",
+   "chunk_size": 512,
+   "stride": 384,
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 74.0519,
+    "P@10": 10.8712,
+    "R@10": 54.356,
+    "MAP@10": 79.7114,
+    "nDCG@10": 65.4868
+   },
+   "paper_value": 65.49
+  },
+  {
+   "system": "REIGN small-l2 + GTE-small @s384",
+   "source_artifact": "results/reign-small-l2_gte-small_s384_test_topk10.json",
+   "checkpoint": "reign-small-l2_gn-gte-small_s384_val-selected",
+   "gn_model": "thenlper/gte-small",
+   "chunk_size": 512,
+   "stride": 384,
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 74.6156,
+    "P@10": 11.8244,
+    "R@10": 59.122,
+    "MAP@10": 77.3526,
+    "nDCG@10": 67.6651
+   },
+   "paper_value": 67.67
+  },
+  {
+   "system": "REIGN small-l2 + GTE-base",
+   "source_artifact": "results/reign_gte-base_test.json",
+   "checkpoint": "reign-small-l2_gn-gte-base_val-selected",
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": null,
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 72.7451,
+    "P@10": 11.3051,
+    "R@10": 56.5255,
+    "MAP@10": 77.8434,
+    "nDCG@10": 66.0158
+   },
+   "paper_value": 66.02
+  },
+  {
+   "system": "REIGN small-l2 + GTE-large @s512",
+   "source_artifact": "results/reign-stmatrix_gte-large_tr-512_ev-c512s512_test.json",
+   "checkpoint": "reign-small-l2_gn-gte-large_st-512_val-selected",
+   "gn_model": "thenlper/gte-large",
+   "chunk_size": 512,
+   "stride": 512,
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 75.837,
+    "P@10": 11.3461,
+    "R@10": 56.7304,
+    "MAP@10": 79.8317,
+    "nDCG@10": 67.2688
+   },
+   "paper_value": 67.27
+  },
+  {
+   "system": "REIGN large-l4 + GTE-small @s384",
+   "source_artifact": "results/reign-large-l4_gte-small_s384_test_topk10.json",
+   "checkpoint": "reign-large-l4_gn-gte-small_s384_val-selected",
+   "gn_model": "thenlper/gte-small",
+   "chunk_size": 512,
+   "stride": 384,
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 73.4882,
+    "P@10": 11.1906,
+    "R@10": 55.9532,
+    "MAP@10": 78.4274,
+    "nDCG@10": 65.9832
+   },
+   "paper_value": 65.98
+  },
+  {
+   "system": "REIGN large-l4 + GTE-base @s384",
+   "source_artifact": "results/reign-large-l4_gte-base_s384_test_topk10.json",
+   "checkpoint": "reign-large-l4_gn-gte-base_s384_val-selected",
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": 384,
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 71.8398,
+    "P@10": 10.8387,
+    "R@10": 54.1937,
+    "MAP@10": 78.3577,
+    "nDCG@10": 64.6506
+   },
+   "paper_value": 64.65
+  },
+  {
+   "system": "REIGN large-l4 + GTE-large @s384",
+   "source_artifact": "results/reign-large-l4_gte-large_s384_test_topk10.json",
+   "checkpoint": "reign-large-l4_gn-gte-large_s384_val-selected",
+   "gn_model": "thenlper/gte-large",
+   "chunk_size": 512,
+   "stride": 384,
+   "dataset": "devrim/goodwiki_long_synthetic_ir",
+   "metrics_pct": {
+    "P@1": 74.0946,
+    "P@10": 10.8746,
+    "R@10": 54.3731,
+    "MAP@10": 80.1211,
+    "nDCG@10": 65.6697
+   },
+   "paper_value": 65.67
+  }
+ ]
+}

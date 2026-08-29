@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>REIGN — Findings of EMNLP 2026</title>
+<meta name="description" content="We propose REIGN, a contrastively trained bi-encoder that operates on sequences of contextualised chunk embeddings from a frozen Guidance Network rather than on raw tokens.">
+<meta name="author" content="Devrim Çavuşoğlu, Emre Akbaş">
+<link rel="canonical" href="https://devrimcavusoglu.github.io/reign/">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://devrimcavusoglu.github.io/reign/">
+<meta property="og:title" content="REIGN: Refurbished Embeddings with Integrated Guidance Networks for Efficient Context-Length Scaling">
+<meta property="og:description" content="We propose REIGN, a contrastively trained bi-encoder that operates on sequences of contextualised chunk embeddings from a frozen Guidance Network rather than on raw tokens.">
+<meta property="og:image" content="https://devrimcavusoglu.github.io/reign/static/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="REIGN: Refurbished Embeddings with Integrated Guidance Networks for Efficient Context-Length Scaling">
+<meta name="twitter:description" content="We propose REIGN, a contrastively trained bi-encoder that operates on sequences of contextualised chunk embeddings from a frozen Guidance Network rather than on raw tokens.">
+<meta name="twitter:image" content="https://devrimcavusoglu.github.io/reign/static/preview.png">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='13'%20fill='%2317171a'/%3E%3Cpath%20d='M14%2044L10%2020L23%2030L32%2014L41%2030L54%2020L50%2044Z'%20fill='%23ffffff'/%3E%3Crect%20x='14'%20y='47'%20width='36'%20height='5'%20rx='2.5'%20fill='%23ffffff'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --col: 860px;
+  --bg: #ffffff;
+  --surface: #f7f7f5;
+  --surface-2: #f2f2ef;
+  --figure-bg: #ffffff;
+  --text: #17171a;
+  --heading: #101014;
+  --muted: #5c5c62;
+  --faint: #8a8a90;
+  --border: #e3e3df;
+  --border-strong: #d2d2cd;
+  --accent: #1c4ea8;
+  --accent-hover: #143a7e;
+  --btn-bg: #ffffff;
+  --btn-fg: #202024;
+  --btn-hover-bg: #f2f2ef;
+  --btn-disabled-bg: #f4f4f1;
+  --btn-disabled-fg: #97979d;
+  --code-bg: #f7f7f5;
+  --code-fg: #24242a;
+  --rule: #ecece8;
+  --shadow: 0 1px 2px rgba(16, 16, 20, 0.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #101216;
+    --surface: #171a20;
+    --surface-2: #1c1f26;
+    --figure-bg: #ffffff;
+    --text: #dfe1e6;
+    --heading: #f2f3f5;
+    --muted: #a2a6b0;
+    --faint: #7e838e;
+    --border: #262a33;
+    --border-strong: #333844;
+    --accent: #8ab4ff;
+    --accent-hover: #a8c8ff;
+    --btn-bg: #1a1e25;
+    --btn-fg: #e2e4e9;
+    --btn-hover-bg: #232830;
+    --btn-disabled-bg: #171a20;
+    --btn-disabled-fg: #6a6f7a;
+    --code-bg: #14171c;
+    --code-fg: #d6d9df;
+    --rule: #22262e;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.68;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: var(--col);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+p { overflow-wrap: break-word; }
+p a, figcaption a, footer a { overflow-wrap: anywhere; }
+
+/* ---------- hero ---------- */
+
+header.hero {
+  padding: 72px 0 8px;
+  text-align: center;
+  border-bottom: 1px solid var(--rule);
+}
+h1.title {
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  font-size: clamp(1.7rem, 1.15rem + 2.1vw, 2.65rem);
+  line-height: 1.22;
+  letter-spacing: -0.012em;
+  color: var(--heading);
+  margin: 0 auto 26px;
+  max-width: 20em;
+  text-wrap: balance;
+}
+.authors {
+  font-size: 1.06rem;
+  font-weight: 500;
+  color: var(--text);
+  margin: 0 0 10px;
+}
+.authors sup { font-weight: 400; font-size: 0.72em; color: var(--muted); }
+.affil {
+  font-size: 0.94rem;
+  color: var(--muted);
+  margin: 0 0 6px;
+}
+.affil sup { font-size: 0.78em; }
+.venue {
+  font-size: 0.94rem;
+  color: var(--accent);
+  font-weight: 500;
+  margin: 14px 0 0;
+}
+
+/* ---------- buttons ---------- */
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 30px 0 44px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+  box-shadow: var(--shadow);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.btn:hover {
+  background: var(--btn-hover-bg);
+  border-color: var(--faint);
+  color: var(--btn-fg);
+  text-decoration: none;
+}
+.btn svg { width: 16px; height: 16px; flex: 0 0 auto; }
+.btn.is-soon {
+  background: var(--btn-disabled-bg);
+  color: var(--btn-disabled-fg);
+  border-style: dashed;
+  border-color: var(--border);
+}
+.btn.is-soon:hover { background: var(--btn-disabled-bg); color: var(--btn-disabled-fg); }
+.btn.is-disabled {
+  background: var(--btn-disabled-bg);
+  color: var(--btn-disabled-fg);
+  border-color: var(--border);
+  border-style: dashed;
+  box-shadow: none;
+}
+
+/* ---------- sections ---------- */
+
+section { padding: 44px 0 8px; }
+h2 {
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-size: 1.42rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--heading);
+  margin: 0 0 18px;
+}
+p { margin: 0 0 18px; }
+.lead { text-align: justify; text-justify: inter-word; hyphens: auto; }
+
+/* ---------- figures ---------- */
+
+figure {
+  margin: 8px 0 26px;
+  text-align: center;
+}
+figure .frame {
+  background: var(--figure-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  display: inline-block;
+  max-width: 100%;
+}
+figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+figure.tall img { width: 330px; }
+figcaption {
+  margin: 16px auto 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--muted);
+  text-align: left;
+  max-width: 42em;
+}
+figcaption b { color: var(--text); font-weight: 600; }
+
+/* ---------- result cards ---------- */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 6px 0 30px;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 18px 16px;
+}
+.card .metric {
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.15;
+  display: block;
+  margin-bottom: 6px;
+}
+.card h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--heading);
+  margin: 0 0 8px;
+  line-height: 1.35;
+}
+.card p {
+  font-size: 0.875rem;
+  line-height: 1.58;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* ---------- bibtex ---------- */
+
+.bib-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.bib-head h2 { margin: 0; }
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--btn-fg);
+  background: var(--btn-bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.copy-btn:hover { background: var(--btn-hover-bg); border-color: var(--faint); }
+.copy-btn svg { width: 14px; height: 14px; }
+pre.bib {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  overflow-x: auto;
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.8rem;
+  line-height: 1.62;
+  color: var(--code-fg);
+  tab-size: 2;
+}
+
+/* ---------- footer ---------- */
+
+footer {
+  margin-top: 56px;
+  padding: 28px 0 56px;
+  border-top: 1px solid var(--rule);
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--muted);
+}
+footer p { margin: 0 0 10px; }
+footer .copyright { font-size: 0.8rem; color: var(--faint); margin: 18px 0 0; }
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 720px) {
+  .cards { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  body { font-size: 16px; }
+  .wrap { padding: 0 18px; }
+  header.hero { padding: 44px 0 4px; }
+  .buttons { gap: 8px; }
+  .btn { padding: 8px 14px; font-size: 0.86rem; }
+  section { padding: 34px 0 4px; }
+  figure .frame { padding: 12px; }
+  figure.tall img { width: 100%; max-width: 300px; }
+  .lead { text-align: left; }
+  pre.bib { font-size: 0.72rem; padding: 13px; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1 class="title">REIGN: Refurbished Embeddings with Integrated Guidance Networks for Efficient Context-Length Scaling</h1>
+    <p class="authors">
+      Devrim Çavuşoğlu<sup>1,&#8202;2</sup> &nbsp;&nbsp; Emre Akbaş<sup>1</sup>
+    </p>
+    <p class="affil"><sup>1</sup> Middle East Technical University (METU) &nbsp;&nbsp; <sup>2</sup> OBSS AI</p>
+    <p class="venue">Findings of the Association for Computational Linguistics: EMNLP 2026</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <nav class="buttons" aria-label="Paper resources">
+    <!-- TODO: link the final paper PDF / ACL Anthology entry when live -->
+    <a class="btn is-soon" href="#" title="available soon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>
+      Paper (PDF)
+    </a>
+
+    <span class="btn is-disabled" title="preprint link coming soon" aria-disabled="true" role="link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M3 3h18v4H3z"/><path d="M10 12h4"/></svg>
+      arXiv (soon)
+    </span>
+
+    <a class="btn" href="https://github.com/devrimcavusoglu/reign">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 17l-5-5 5-5"/><path d="M16 7l5 5-5 5"/><path d="M13.5 4l-3 16"/></svg>
+      Code
+    </a>
+
+    <a class="btn" href="https://huggingface.co/datasets/devrim/goodwiki_long_synthetic_ir">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/><path d="M4 12v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/></svg>
+      Dataset
+    </a>
+
+    <a class="btn" href="https://huggingface.co/collections/devrim/reign-emnlp-2026-findings-6a9202c43943622462e6ed9c">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 16l9 5 9-5"/></svg>
+      Models
+    </a>
+
+    <a class="btn" href="#bibtex">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7H6a2 2 0 0 0-2 2v3h5V7z"/><path d="M4 12c0 3 1.6 4.6 4 5"/><path d="M20 7h-3a2 2 0 0 0-2 2v3h5V7z"/><path d="M15 12c0 3 1.6 4.6 4 5"/></svg>
+      BibTeX
+    </a>
+  </nav>
+
+  <section id="abstract">
+    <h2>Abstract</h2>
+    <p class="lead">Dense retrieval over long documents is expensive: token-level encoders scale quadratically in sequence length and most long-context embedding models reach 32K tokens only through architectural workarounds or by stretching billion-parameter LLMs. We propose <strong>REIGN</strong> (Refurbished Embeddings with Integrated Guidance Networks), a contrastively trained bi-encoder that operates on sequences of contextualised chunk embeddings from a frozen Guidance Network (GN) rather than on raw tokens. REIGN targets multi-chunk inputs and primarily document-to-document retrieval; single-chunk inputs are served by the GN alone. Decoupling token-level processing from document-level reasoning, and caching the GN embeddings to disk, cuts per-document training cost by roughly four orders of magnitude relative to chunked Transformer fine-tuning. We also release a synthetic long-document retrieval benchmark for contrastive training and evaluation at long context lengths. Across an in-distribution Wikipedia benchmark, the LoCo out-of-distribution suite, and a real-world patent retrieval case study, REIGN matches dense long-context retrievers at smaller parameter budgets per regime: statistically indistinguishable from models 1.6&ndash;4.3&#215; larger on the patent task, and within 0.65 nDCG@10 of a 20&#215;-larger model on LoCo.</p>
+  </section>
+
+  <section id="method">
+    <h2>Method</h2>
+    <figure class="tall">
+      <span class="frame"><img src="static/reign_framework.png" alt="REIGN architecture: a document is split into chunks, each chunk is encoded by a frozen Guidance Network, and a trainable REIGN encoder aggregates the chunk embeddings into a single document embedding by average pooling." width="1000" height="1851"></span>
+      <figcaption><b>REIGN architecture.</b> A long document is split into chunks and a frozen Guidance Network (GN) encodes each chunk once into a contextual embedding, which can be cached to disk and reused. The trainable REIGN encoder is a small Transformer over that chunk-embedding sequence: a permutation-equivariant set function with no positional encoding. Average pooling across chunks yields one document embedding, invariant to chunk order. Single-chunk inputs need no aggregation and are served by the GN alone.</figcaption>
+    </figure>
+  </section>
+
+  <section id="results">
+    <h2>Results</h2>
+
+    <div class="cards">
+      <div class="card">
+        <span class="metric">1.6&ndash;4.3&#215;</span>
+        <h3>Parity at a fraction of the parameters</h3>
+        <p>On the DAPFAM patent task, REIGN + GTE-large (357M total) is statistically indistinguishable from dense baselines 1.6&ndash;4.3&#215; larger, under paired significance tests on per-query nDCG@100.</p>
+      </div>
+      <div class="card">
+        <span class="metric">49&ndash;229&#215;</span>
+        <h3>Long-context efficiency</h3>
+        <p>With cached GN chunk embeddings, REIGN answers queries 49&ndash;229&#215; faster than re-running the GN per query, and stays at parity when uncached. Peak GPU memory is 0.24&ndash;1.73&#8202;GB, versus 4.8&ndash;18.9&#8202;GB for the native long-context dense baselines (Jina-v3 measured at batch 4).</p>
+      </div>
+      <div class="card">
+        <span class="metric">0.65</span>
+        <h3>Close to a 20&#215;-larger model on LoCo</h3>
+        <p>On the out-of-distribution LoCo suite, REIGN + GTE-large is within 0.65 nDCG@10 of a 20&#215;-larger model.</p>
+      </div>
+    </div>
+
+    <figure>
+      <span class="frame"><img src="static/pareto_params_vs_ndcg.png" alt="Three scatter plots of total parameters (log scale) against retrieval quality for GoodWiki-Long, DAPFAM, and LoCo, comparing REIGN against chunked and native long-context dense baselines." width="1800" height="1415"></span>
+      <figcaption><b>Parameter efficiency across three long-document retrieval regimes.</b> Total parameters (log scale) versus the primary nDCG metric; solid lines connect the three guidance-network scales (small / base / large), so the REIGN cross-chunk encoder is visible against its own chunked mean-pool baseline. The picture is task-conditional: REIGN sits above the chunked baseline at every scale on GoodWiki-Long, matches or exceeds it on DAPFAM, and on LoCo the bare chunked baseline is at or above REIGN except at the small-GN end.</figcaption>
+    </figure>
+  </section>
+
+  <section id="dataset">
+    <h2>Dataset</h2>
+    <p class="lead">We release <strong>GoodWiki-Long-Synthetic</strong>, a synthetic long-document retrieval dataset built from GoodWiki, a cleaned markdown release of Wikipedia. Long articles are rephrased with an LLM, so each article and its rephrasal form an aligned positive pair; topical distractors are injected as partial matches. The result is graded relevance over documents that average 5,065 words. The dataset uses the standard BEIR/MTEB tri-config layout and works with existing retrieval evaluation pipelines: <a href="https://huggingface.co/datasets/devrim/goodwiki_long_synthetic_ir">huggingface.co/datasets/devrim/goodwiki_long_synthetic_ir</a>.</p>
+  </section>
+
+  <section id="bibtex">
+    <div class="bib-head">
+      <h2>BibTeX</h2>
+      <button class="copy-btn" type="button" id="copy-bib" aria-label="Copy BibTeX entry to clipboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span id="copy-label">Copy</span>
+      </button>
+    </div>
+<pre class="bib" id="bib-text">@inproceedings{cavusoglu2026reign,
+  title     = {{REIGN}: Refurbished Embeddings with Integrated Guidance Networks for Efficient Context-Length Scaling},
+  author    = {{\c{C}}avu{\c{s}}o{\u{g}}lu, Devrim and Akba{\c{s}}, Emre},
+  booktitle = {Findings of the Association for Computational Linguistics: {EMNLP} 2026},
+  year      = {2026},
+  publisher = {Association for Computational Linguistics},
+  note      = {To appear}
+}</pre>
+  </section>
+
+  <footer>
+    <p>Code is released under the Apache License 2.0.</p>
+    <p>This work was conducted and supported by OBSS under the project code ARGEM-024.</p>
+    <p>Contact: <a href="mailto:devrim.cavusoglu@metu.edu.tr">devrim.cavusoglu@metu.edu.tr</a></p>
+    <p class="copyright">&copy; 2026 REIGN authors.</p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var btn = document.getElementById('copy-bib');
+  var label = document.getElementById('copy-label');
+  var src = document.getElementById('bib-text');
+  if (!btn || !label || !src) return;
+
+  function flash(msg) {
+    label.textContent = msg;
+    window.setTimeout(function () { label.textContent = 'Copy'; }, 1800);
+  }
+
+  function fallback(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.top = '-1000px';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    flash(ok ? 'Copied' : 'Press Ctrl+C');
+  }
+
+  btn.addEventListener('click', function () {
+    var text = src.textContent;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        flash('Copied');
+      }, function () {
+        fallback(text);
+      });
+    } else {
+      fallback(text);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

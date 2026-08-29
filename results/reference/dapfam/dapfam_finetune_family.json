@@ -1,0 +1,677 @@
+{
+ "_what": "Aggregate reference metrics for the DAPFAM fine-tuned family (paper Section 5.3 and Appendix J). One entry per fine-tuned checkpoint, with the exact training configuration that produced it and the nDCG@100 it scores on test / test_in / test_out. Aggregate metrics only; no per-query blocks.",
+ "_protocol": "InfoNCE at temperature 0.07 with false-negative masking, --partial-policy ignore, 4 dedicated negatives per sample plus in-batch negatives, AdamW with cosine schedule, 16-mixed precision, seed 42, check-val-every-n-epoch 3, chunk size 512. Scoring is nDCG@100 at top_k=100 over the full 45,336-document FullText corpus with self-matches removed; test n=187, test_in n=180, test_out n=138. Metrics are percentages.",
+ "_headline": "No fine-tune beats the zero-shot backbone: the best cell (ftreg-r3, warm start at lr 1e-6 / wd 1e-2) reaches 32.73 against 32.68 for the same backbone zero-shot at stride 512, and cold-starting the same recipe loses 0.43 (32.30).",
+ "runs": [
+  {
+   "system": "reign-base-l3_gn-gte-base_dapfam-ft-c512s512",
+   "reproduce_tag": "dapfam-ft-s512",
+   "training": {
+    "start": "cold",
+    "lr": "1e-5",
+    "wd": "1e-4",
+    "epochs": 15,
+    "batch_size": 4,
+    "eval_batch_size": 4,
+    "stride": 512
+   },
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": 512,
+   "checkpoint": "reign-base-l3_gn-gte-base_dapfam-ft-c512s512",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-base-ft_test_dapfam-ft-s512.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 39.0374,
+      "P@100": 7.5455,
+      "R@100": 37.7273,
+      "MAP@100": 29.5959,
+      "nDCG@100": 31.8341
+     },
+     "paper_value": 31.83
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-base-ft_test_in_dapfam-ft-s512.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 39.4444,
+      "P@100": 7.2611,
+      "R@100": 47.4865,
+      "MAP@100": 30.4311,
+      "nDCG@100": 36.5767
+     },
+     "paper_value": 36.58
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-base-ft_test_out_dapfam-ft-s512.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 1.4493,
+      "P@100": 0.7536,
+      "R@100": 12.3969,
+      "MAP@100": 2.8408,
+      "nDCG@100": 4.9035
+     },
+     "paper_value": 4.9
+    }
+   }
+  },
+  {
+   "system": "reign-base-l3_gn-gte-base_dapfam-ft-c512s384",
+   "reproduce_tag": "dapfam-ft-s384",
+   "training": {
+    "start": "cold",
+    "lr": "1e-5",
+    "wd": "1e-4",
+    "epochs": 15,
+    "batch_size": 2,
+    "eval_batch_size": 4,
+    "stride": 384
+   },
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": 384,
+   "checkpoint": "reign-base-l3_gn-gte-base_dapfam-ft-c512s384",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-base-ft_test_dapfam-ft-s384.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 37.4332,
+      "P@100": 7.4118,
+      "R@100": 37.0588,
+      "MAP@100": 28.8211,
+      "nDCG@100": 31.1226
+     },
+     "paper_value": 31.12
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-base-ft_test_in_dapfam-ft-s384.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 37.7778,
+      "P@100": 7.1111,
+      "R@100": 46.1191,
+      "MAP@100": 29.6352,
+      "nDCG@100": 35.4552
+     },
+     "paper_value": 35.46
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-base-ft_test_out_dapfam-ft-s384.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 1.4493,
+      "P@100": 0.7681,
+      "R@100": 13.3717,
+      "MAP@100": 3.1229,
+      "nDCG@100": 5.2025
+     },
+     "paper_value": 5.2
+    }
+   }
+  },
+  {
+   "system": "reign-base-l3_gn-gte-base_dapfam-ftwarm-c512s512",
+   "reproduce_tag": "dapfam-ftwarm-base-s512",
+   "training": {
+    "start": "warm",
+    "warm_start_from": "reign-base-l3_gn-gte-base_val-selected/best",
+    "lr": "1e-5",
+    "wd": "1e-4",
+    "epochs": 15,
+    "batch_size": 2,
+    "eval_batch_size": 2,
+    "stride": 512
+   },
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": 512,
+   "checkpoint": "reign-base-l3_gn-gte-base_dapfam-ftwarm-c512s512",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-base-ft_test_dapfam-ftwarm-base-s512.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 36.8984,
+      "P@100": 7.4171,
+      "R@100": 37.0856,
+      "MAP@100": 29.5569,
+      "nDCG@100": 31.1879
+     },
+     "paper_value": 31.19
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-base-ft_test_in_dapfam-ftwarm-base-s512.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 37.7778,
+      "P@100": 7.1,
+      "R@100": 45.885,
+      "MAP@100": 30.449,
+      "nDCG@100": 35.5977
+     },
+     "paper_value": 35.6
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-base-ft_test_out_dapfam-ftwarm-base-s512.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 0.7246,
+      "P@100": 0.7899,
+      "R@100": 14.2238,
+      "MAP@100": 2.8765,
+      "nDCG@100": 5.3598
+     },
+     "paper_value": 5.36
+    }
+   }
+  },
+  {
+   "system": "reign-base-l3_gn-gte-base_dapfam-ftwarm-c512s384",
+   "reproduce_tag": "dapfam-ftwarm-base-s384",
+   "training": {
+    "start": "warm",
+    "warm_start_from": "reign-base-l3_gn-gte-base_val-selected/best",
+    "lr": "1e-5",
+    "wd": "1e-4",
+    "epochs": 15,
+    "batch_size": 2,
+    "eval_batch_size": 2,
+    "stride": 384
+   },
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": 384,
+   "checkpoint": "reign-base-l3_gn-gte-base_dapfam-ftwarm-c512s384",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-base-ft_test_dapfam-ftwarm-base-s384.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 39.0374,
+      "P@100": 7.6898,
+      "R@100": 38.4492,
+      "MAP@100": 29.8005,
+      "nDCG@100": 32.3054
+     },
+     "paper_value": 32.31
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-base-ft_test_in_dapfam-ftwarm-base-s384.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 39.4444,
+      "P@100": 7.3611,
+      "R@100": 47.5259,
+      "MAP@100": 30.5242,
+      "nDCG@100": 36.8779
+     },
+     "paper_value": 36.88
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-base-ft_test_out_dapfam-ftwarm-base-s384.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 1.4493,
+      "P@100": 0.8188,
+      "R@100": 14.4452,
+      "MAP@100": 3.4938,
+      "nDCG@100": 5.6155
+     },
+     "paper_value": 5.62
+    }
+   }
+  },
+  {
+   "system": "reign-base-l3_gn-gte-base_dapfam-ftreg-r1-c512s512",
+   "reproduce_tag": "dapfam-ftreg-r1",
+   "training": {
+    "start": "warm",
+    "warm_start_from": "reign-base-l3_gn-gte-base_val-selected/best",
+    "lr": "5e-6",
+    "wd": "1e-2",
+    "epochs": 6,
+    "batch_size": 2,
+    "eval_batch_size": 2,
+    "stride": 512
+   },
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": 512,
+   "checkpoint": "reign-base-l3_gn-gte-base_dapfam-ftreg-r1-c512s512",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-base-ft_test_dapfam-ftreg-r1.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 37.4332,
+      "P@100": 7.6845,
+      "R@100": 38.4225,
+      "MAP@100": 31.0687,
+      "nDCG@100": 32.32
+     },
+     "paper_value": 32.32
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-base-ft_test_in_dapfam-ftreg-r1.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 37.7778,
+      "P@100": 7.3667,
+      "R@100": 47.4696,
+      "MAP@100": 32.0318,
+      "nDCG@100": 37.125
+     },
+     "paper_value": 37.12
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-base-ft_test_out_dapfam-ftreg-r1.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 1.4493,
+      "P@100": 0.8043,
+      "R@100": 15.268,
+      "MAP@100": 3.3276,
+      "nDCG@100": 5.6402
+     },
+     "paper_value": 5.64
+    }
+   }
+  },
+  {
+   "system": "reign-base-l3_gn-gte-base_dapfam-ftreg-r2-c512s512",
+   "reproduce_tag": "dapfam-ftreg-r2",
+   "training": {
+    "start": "warm",
+    "warm_start_from": "reign-base-l3_gn-gte-base_val-selected/best",
+    "lr": "2e-6",
+    "wd": "1e-2",
+    "epochs": 6,
+    "batch_size": 2,
+    "eval_batch_size": 2,
+    "stride": 512
+   },
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": 512,
+   "checkpoint": "reign-base-l3_gn-gte-base_dapfam-ftreg-r2-c512s512",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-base-ft_test_dapfam-ftreg-r2.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 37.9679,
+      "P@100": 7.7487,
+      "R@100": 38.7433,
+      "MAP@100": 30.6626,
+      "nDCG@100": 32.6024
+     },
+     "paper_value": 32.6
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-base-ft_test_in_dapfam-ftreg-r2.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 38.8889,
+      "P@100": 7.4444,
+      "R@100": 48.1488,
+      "MAP@100": 31.9802,
+      "nDCG@100": 37.6433
+     },
+     "paper_value": 37.64
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-base-ft_test_out_dapfam-ftreg-r2.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 0.7246,
+      "P@100": 0.7899,
+      "R@100": 14.4139,
+      "MAP@100": 2.7801,
+      "nDCG@100": 5.3138
+     },
+     "paper_value": 5.31
+    }
+   }
+  },
+  {
+   "system": "reign-base-l3_gn-gte-base_dapfam-ftreg-r3-c512s512",
+   "reproduce_tag": "dapfam-ftreg-r3",
+   "training": {
+    "start": "warm",
+    "warm_start_from": "reign-base-l3_gn-gte-base_val-selected/best",
+    "lr": "1e-6",
+    "wd": "1e-2",
+    "epochs": 8,
+    "batch_size": 2,
+    "eval_batch_size": 2,
+    "stride": 512,
+    "note": "best fine-tuned run in the paper's Section 5.3 sweep (32.73)"
+   },
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": 512,
+   "checkpoint": "reign-base-l3_gn-gte-base_dapfam-ftreg-r3-c512s512",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-base-ft_test_dapfam-ftreg-r3.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 39.0374,
+      "P@100": 7.7754,
+      "R@100": 38.877,
+      "MAP@100": 31.0166,
+      "nDCG@100": 32.7278
+     },
+     "paper_value": 32.73
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-base-ft_test_in_dapfam-ftreg-r3.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 40.0,
+      "P@100": 7.4722,
+      "R@100": 48.3214,
+      "MAP@100": 32.1099,
+      "nDCG@100": 37.764
+     },
+     "paper_value": 37.76
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-base-ft_test_out_dapfam-ftreg-r3.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 0.7246,
+      "P@100": 0.7899,
+      "R@100": 14.4384,
+      "MAP@100": 2.7414,
+      "nDCG@100": 5.3223
+     },
+     "paper_value": 5.32
+    }
+   }
+  },
+  {
+   "system": "reign-base-l3_gn-gte-base_dapfam-ftreg-r4-c512s512",
+   "reproduce_tag": "dapfam-ftreg-r4",
+   "training": {
+    "start": "warm",
+    "warm_start_from": "reign-base-l3_gn-gte-base_val-selected/best",
+    "lr": "2e-6",
+    "wd": "1e-1",
+    "epochs": 6,
+    "batch_size": 2,
+    "eval_batch_size": 2,
+    "stride": 512
+   },
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": 512,
+   "checkpoint": "reign-base-l3_gn-gte-base_dapfam-ftreg-r4-c512s512",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-base-ft_test_dapfam-ftreg-r4.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 37.9679,
+      "P@100": 7.7487,
+      "R@100": 38.7433,
+      "MAP@100": 30.6631,
+      "nDCG@100": 32.6024
+     },
+     "paper_value": 32.6
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-base-ft_test_in_dapfam-ftreg-r4.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 38.8889,
+      "P@100": 7.4444,
+      "R@100": 48.1488,
+      "MAP@100": 31.9805,
+      "nDCG@100": 37.6433
+     },
+     "paper_value": 37.64
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-base-ft_test_out_dapfam-ftreg-r4.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 0.7246,
+      "P@100": 0.7899,
+      "R@100": 14.4139,
+      "MAP@100": 2.7805,
+      "nDCG@100": 5.3146
+     },
+     "paper_value": 5.31
+    }
+   }
+  },
+  {
+   "system": "reign-base-l3_gn-gte-base_dapfam-ftcold-long-c512s512",
+   "reproduce_tag": "dapfam-ftcold-long-s512",
+   "training": {
+    "start": "cold",
+    "lr": "1e-5",
+    "wd": "1e-4",
+    "epochs": 60,
+    "batch_size": 4,
+    "eval_batch_size": 4,
+    "stride": 512
+   },
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": 512,
+   "checkpoint": "reign-base-l3_gn-gte-base_dapfam-ftcold-long-c512s512",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-base-ft_test_dapfam-ftcold-long-s512.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 35.2941,
+      "P@100": 7.3957,
+      "R@100": 36.9786,
+      "MAP@100": 28.8885,
+      "nDCG@100": 31.0159
+     },
+     "paper_value": 31.02
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-base-ft_test_in_dapfam-ftcold-long-s512.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 35.5556,
+      "P@100": 7.0778,
+      "R@100": 46.1451,
+      "MAP@100": 29.6272,
+      "nDCG@100": 35.443
+     },
+     "paper_value": 35.44
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-base-ft_test_out_dapfam-ftcold-long-s512.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 1.4493,
+      "P@100": 0.7899,
+      "R@100": 12.6862,
+      "MAP@100": 2.8197,
+      "nDCG@100": 4.9428
+     },
+     "paper_value": 4.94
+    }
+   }
+  },
+  {
+   "system": "reign-base-l3_gn-gte-large_dapfam-ftwarm-c512s512",
+   "reproduce_tag": "dapfam-ftwarm-large-s512",
+   "training": {
+    "start": "warm",
+    "warm_start_from": "reign-base-l3_gn-gte-large_val-selected/best",
+    "lr": "1e-5",
+    "wd": "1e-4",
+    "epochs": 15,
+    "batch_size": 2,
+    "eval_batch_size": 2,
+    "stride": 512
+   },
+   "gn_model": "thenlper/gte-large",
+   "chunk_size": 512,
+   "stride": 512,
+   "checkpoint": "reign-base-l3_gn-gte-large_dapfam-ftwarm-c512s512",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-large-ft_test_dapfam-ftwarm-large-s512.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 39.5722,
+      "P@100": 7.8503,
+      "R@100": 39.2513,
+      "MAP@100": 30.109,
+      "nDCG@100": 33.0589
+     },
+     "paper_value": 33.06
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-large-ft_test_in_dapfam-ftwarm-large-s512.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 40.5556,
+      "P@100": 7.55,
+      "R@100": 48.9096,
+      "MAP@100": 31.3909,
+      "nDCG@100": 38.1048
+     },
+     "paper_value": 38.1
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-large-ft_test_out_dapfam-ftwarm-large-s512.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 0.7246,
+      "P@100": 0.7899,
+      "R@100": 14.7001,
+      "MAP@100": 2.218,
+      "nDCG@100": 5.0943
+     },
+     "paper_value": 5.09
+    }
+   }
+  },
+  {
+   "system": "reign-base-l3_gn-gte-large_dapfam-ftwarm-c512s384",
+   "reproduce_tag": "dapfam-ftwarm-large-s384",
+   "training": {
+    "start": "warm",
+    "warm_start_from": "reign-base-l3_gn-gte-large_val-selected/best",
+    "lr": "1e-5",
+    "wd": "1e-4",
+    "epochs": 15,
+    "batch_size": 2,
+    "eval_batch_size": 2,
+    "stride": 384
+   },
+   "gn_model": "thenlper/gte-large",
+   "chunk_size": 512,
+   "stride": 384,
+   "checkpoint": "reign-base-l3_gn-gte-large_dapfam-ftwarm-c512s384",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-large-ft_test_dapfam-ftwarm-large-s384.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 40.6417,
+      "P@100": 7.8235,
+      "R@100": 39.1176,
+      "MAP@100": 29.1032,
+      "nDCG@100": 32.7906
+     },
+     "paper_value": 32.79
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-large-ft_test_in_dapfam-ftwarm-large-s384.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 41.6667,
+      "P@100": 7.4611,
+      "R@100": 48.5095,
+      "MAP@100": 30.4702,
+      "nDCG@100": 37.4819
+     },
+     "paper_value": 37.48
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-large-ft_test_out_dapfam-ftwarm-large-s384.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 0.7246,
+      "P@100": 0.8696,
+      "R@100": 16.0326,
+      "MAP@100": 2.4821,
+      "nDCG@100": 5.5604
+     },
+     "paper_value": 5.56
+    }
+   }
+  },
+  {
+   "system": "reign-base-l3_gn-gte-base_dapfam-coldreg-r3-c512s512",
+   "reproduce_tag": "dapfam-coldreg-r3",
+   "training": {
+    "start": "cold",
+    "lr": "1e-6",
+    "wd": "1e-2",
+    "epochs": 8,
+    "batch_size": 2,
+    "eval_batch_size": 2,
+    "stride": 512,
+    "note": "cold-start control at the r3 hyperparameters; the paper's 32.30 vs 32.73 warm-vs-cold comparison. Weights are NOT part of the released model zoo."
+   },
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": 512,
+   "checkpoint": "reign-base-l3_gn-gte-base_dapfam-coldreg-r3-c512s512",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-base-ft_test_dapfam-coldreg-r3.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 38.5027,
+      "P@100": 7.6952,
+      "R@100": 38.4759,
+      "MAP@100": 30.1462,
+      "nDCG@100": 32.3019
+     },
+     "paper_value": 32.3
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-base-ft_test_in_dapfam-coldreg-r3.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 38.8889,
+      "P@100": 7.4167,
+      "R@100": 48.1195,
+      "MAP@100": 31.3359,
+      "nDCG@100": 37.3302
+     },
+     "paper_value": 37.33
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-base-ft_test_out_dapfam-coldreg-r3.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 1.4493,
+      "P@100": 0.7536,
+      "R@100": 13.788,
+      "MAP@100": 2.8768,
+      "nDCG@100": 5.2173
+     },
+     "paper_value": 5.22
+    }
+   }
+  }
+ ]
+}

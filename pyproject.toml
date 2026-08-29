@@ -1,0 +1,101 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reign"
+version = "1.0.0"
+description = "Refurbished Embeddings with Integrated Guidance Networks for efficient context-length scaling of text encoders."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "Devrim Çavuşoğlu", email = "devrim.cavusoglu@metu.edu.tr" },
+]
+maintainers = [
+    { name = "Devrim Çavuşoğlu", email = "devrim.cavusoglu@metu.edu.tr" },
+]
+keywords = [
+    "information-retrieval",
+    "long-context",
+    "text-embeddings",
+    "dense-retrieval",
+    "representation-learning",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "torch>=2.1",
+    "transformers>=4.51",
+    "lightning>=2.5",
+    "datasets>=2.14",
+    "huggingface-hub>=0.23",
+    "h5py>=3.8",
+    "numpy>=1.24",
+    "tqdm>=4.65",
+    "scikit-learn>=1.3",
+    "bm25s>=0.2",
+]
+
+[project.optional-dependencies]
+eval = ["mteb>=1.38.9"]
+tensorboard = ["tensorboard>=2.15"]
+dev = [
+    "pytest>=7",
+    "pytest-timeout>=2.1",
+    "pytest-cov>=4",
+    "scipy>=1.11",
+    "black>=24.3",
+    "isort>=5.13",
+    "flake8>=7.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/devrimcavusoglu/reign"
+"Project page" = "https://devrimcavusoglu.github.io/reign"
+Repository = "https://github.com/devrimcavusoglu/reign"
+
+[project.scripts]
+reign-train = "reign.train:main"
+reign-train-ir = "reign.train_ir:main"
+reign-eval = "reign.eval:main"
+
+[tool.setuptools]
+packages = ["reign", "reign.dapfam", "reign.encoders"]
+
+[tool.black]
+line-length = 104
+exclude = '''
+(
+  /(
+    | .git
+    | venv
+    | .venv
+    | outputs
+    | test_data
+  )/
+)
+'''
+
+[tool.isort]
+line_length = 104
+profile = "black"
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+timeout = 400
+timeout_method = "thread"
+testpaths = "test"
+addopts = "-vvv"
+tmp_path_retention_policy = "failed"
+markers = [
+    "cuda: marks tests as requiring CUDA (deselect with '-m \"not cuda\"')",
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]

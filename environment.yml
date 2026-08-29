@@ -1,0 +1,35 @@
+name: reign
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  # CUDA-enabled PyTorch from the pytorch/nvidia channels. Drop these two lines
+  # (and let pip resolve `torch`) for a CPU-only environment.
+  - pytorch>=2.1
+  - pytorch-cuda=12.1
+  - pip:
+      # --- runtime ---
+      - transformers>=4.51
+      - lightning>=2.5
+      - datasets>=2.14
+      - huggingface-hub>=0.23
+      - h5py>=3.8
+      - numpy>=1.24
+      - tqdm>=4.65
+      # --- sparse retrieval baselines ---
+      - scikit-learn>=1.3
+      - bm25s>=0.2
+      # --- optional: MTEB evaluation harness ---
+      - mteb>=1.38.9
+      # --- optional: TensorBoard metric logging (--logger tensorboard) ---
+      - tensorboard>=2.15
+      # --- development / test tooling ---
+      - pytest>=7
+      - pytest-timeout>=2.1
+      - pytest-cov>=4
+      - black>=24.3
+      - isort>=5.13
+      - flake8>=7.0

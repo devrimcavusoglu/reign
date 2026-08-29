@@ -1,0 +1,45 @@
+cff-version: 1.2.0
+message: "If you use this software or the REIGN method, please cite the paper below."
+title: "REIGN: Refurbished Embeddings with Integrated Guidance Networks"
+abstract: >-
+  Reference implementation of REIGN, a lightweight guidance-network architecture
+  that scales the effective context length of pretrained text encoders for
+  long-document retrieval without full-model fine-tuning.
+type: software
+version: "1.0.0"
+date-released: "2026-08-28"
+license: Apache-2.0
+repository-code: "https://github.com/devrimcavusoglu/reign"
+url: "https://devrimcavusoglu.github.io/reign"
+keywords:
+  - information retrieval
+  - long-context retrieval
+  - text embeddings
+  - dense retrieval
+  - representation learning
+authors:
+  - family-names: "Çavuşoğlu"
+    given-names: "Devrim"
+    email: "devrim.cavusoglu@metu.edu.tr"
+    affiliation: "Middle East Technical University"
+  - family-names: "Akbaş"
+    given-names: "Emre"
+    affiliation: "Middle East Technical University"
+preferred-citation:
+  type: conference-paper
+  title: "REIGN: Refurbished Embeddings with Integrated Guidance Networks for Efficient Context-Length Scaling"
+  authors:
+    - family-names: "Çavuşoğlu"
+      given-names: "Devrim"
+      email: "devrim.cavusoglu@metu.edu.tr"
+      affiliation: "Middle East Technical University; OBSS AI"
+    - family-names: "Akbaş"
+      given-names: "Emre"
+      affiliation: "Middle East Technical University"
+  collection-title: "Findings of the Association for Computational Linguistics: EMNLP 2026"
+  collection-type: "proceedings"
+  publisher:
+    name: "Association for Computational Linguistics"
+  year: 2026
+  status: "in-press"
+  notes: "To appear in Findings of the Association for Computational Linguistics: EMNLP 2026."

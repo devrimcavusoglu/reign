@@ -1,0 +1,73 @@
+{
+ "_what": "Aggregate reference metrics for the short-context MTEB check (paper Table 6, Appendix B): ArguAna and FiQA-2018 only, REIGN against the truncated GTE-small baseline. Aggregate metrics only; no per-query blocks. Every value here is the value printed in Table 6, so the table and this file are the same numbers.",
+ "_protocol": "mteb 1.38.34, test split, 512-token truncation for the baseline (GTE-small's native window). The REIGN row is the paper-default base-l3 encoder on GTE-small, trained only on GoodWiki-Long, with no MTEB-specific fine-tuning; the checkpoint that produced Table 6 is the stride-384 one. Metrics are percentages.",
+ "_expected_outcome": "REIGN is expected to LOSE here by 5.10 nDCG@10 on ArguAna and 6.76 on FiQA-2018: inputs shorter than the chunk size collapse to a single chunk embedding, so the cross-chunk encoder has nothing to aggregate.",
+ "rows": [
+  {
+   "system": "REIGN base-l3 + GTE-small",
+   "checkpoint": "reign-base-l3_gn-gte-small_s384_val-selected",
+   "gn_model": "thenlper/gte-small",
+   "tasks": {
+    "ArguAna": {
+     "source_artifact": "mteb_results/reign-base-l3_gte-small/no_model_name_available/no_revision_available/ArguAna.json",
+     "dataset_revision": "c22ab2a51041ffd869aaddef7af8d8215647e41a",
+     "mteb_version": "1.38.34",
+     "split": "test",
+     "metrics_pct": {
+      "MAP@1": 26.53,
+      "MAP@10": 41.52,
+      "R@10": 78.66,
+      "P@10": 7.87,
+      "nDCG@10": 50.32
+     }
+    },
+    "FiQA2018": {
+     "source_artifact": "mteb_results/reign-base-l3_gte-small/no_model_name_available/no_revision_available/FiQA2018.json",
+     "dataset_revision": "27a168819829fe9bcd655c2df245fb19452e8e06",
+     "mteb_version": "1.38.34",
+     "split": "test",
+     "metrics_pct": {
+      "MAP@1": 15.23,
+      "MAP@10": 25.66,
+      "R@10": 38.14,
+      "P@10": 9.35,
+      "nDCG@10": 32.55
+     }
+    }
+   }
+  },
+  {
+   "system": "GTE-small (truncated 512, baseline)",
+   "model": "thenlper/gte-small",
+   "model_revision": "17e1f347d17fe144873b1201da91788898c639cd",
+   "tasks": {
+    "ArguAna": {
+     "source_artifact": "mteb_results/baseline_gte-small/ArguAna/thenlper__gte-small/17e1f347d17fe144873b1201da91788898c639cd/ArguAna.json",
+     "dataset_revision": "c22ab2a51041ffd869aaddef7af8d8215647e41a",
+     "mteb_version": "1.38.34",
+     "split": "test",
+     "metrics_pct": {
+      "MAP@1": 30.73,
+      "MAP@10": 46.6,
+      "R@10": 83.57,
+      "P@10": 8.36,
+      "nDCG@10": 55.42
+     }
+    },
+    "FiQA2018": {
+     "source_artifact": "mteb_results/baseline_gte-small/FiQA2018/thenlper__gte-small/17e1f347d17fe144873b1201da91788898c639cd/FiQA2018.json",
+     "dataset_revision": "27a168819829fe9bcd655c2df245fb19452e8e06",
+     "mteb_version": "1.38.34",
+     "split": "test",
+     "metrics_pct": {
+      "MAP@1": 19.34,
+      "MAP@10": 31.72,
+      "R@10": 45.63,
+      "P@10": 11.16,
+      "nDCG@10": 39.31
+     }
+    }
+   }
+  }
+ ]
+}

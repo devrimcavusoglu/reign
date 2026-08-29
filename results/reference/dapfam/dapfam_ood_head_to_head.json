@@ -1,0 +1,396 @@
+{
+ "_what": "Aggregate reference metrics for the DAPFAM half of paper Table 8: the out-of-distribution small-l2 vs base-l3 head-to-head on each GTE Guidance Network at both strides, all zero-shot. Nine of that half's twelve cells are here; the other three are Table 4 rows as well and live in dapfam_test.json rather than being duplicated -- base-l3 + GTE-small @s512 (31.69), base-l3 + GTE-base @s384 (32.72) and base-l3 + GTE-large @s512 (33.10). Aggregate metrics only; no per-query blocks. The LoCo half of Table 8 is in results/reference/loco/loco_subtask_ndcg.json.",
+ "_protocol": "Identical for every row: nDCG@100 at top_k=100 over the full 45,336-document FullText corpus with self-matches removed; test n=187, test_in n=180, test_out n=138 (test_in/test_out are positives subsets of test). Metrics are percentages.",
+ "rows": [
+  {
+   "system": "REIGN base-l3 + GTE-small @s384 (zero-shot)",
+   "reproduce_tag": "dapfam-zs-gte-small-s384",
+   "gn_model": "thenlper/gte-small",
+   "chunk_size": 512,
+   "stride": 384,
+   "checkpoint": "reign-base-l3_gn-gte-small_s384_val-selected",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-small-zs_test_dapfam-zs-gte-small-s384.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 36.3636,
+      "P@100": 7.3476,
+      "R@100": 36.738,
+      "MAP@100": 29.2972,
+      "nDCG@100": 31.1019
+     },
+     "paper_value": 31.1
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-small-zs_test_in_dapfam-zs-gte-small-s384.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 36.6667,
+      "P@100": 7.1222,
+      "R@100": 47.195,
+      "MAP@100": 30.1126,
+      "nDCG@100": 36.0713
+     },
+     "paper_value": 36.07
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-small-zs_test_out_dapfam-zs-gte-small-s384.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 1.4493,
+      "P@100": 0.6667,
+      "R@100": 12.4034,
+      "MAP@100": 2.6938,
+      "nDCG@100": 4.814
+     },
+     "paper_value": 4.81
+    }
+   }
+  },
+  {
+   "system": "REIGN base-l3 + GTE-large @s384 (zero-shot)",
+   "reproduce_tag": "dapfam-zs-large-s384",
+   "gn_model": "thenlper/gte-large",
+   "chunk_size": 512,
+   "stride": 384,
+   "checkpoint": "reign-base-l3_gn-gte-large_val-selected",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-large-zs_test_dapfam-zs-large-s384.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 42.246,
+      "P@100": 7.8503,
+      "R@100": 39.2513,
+      "MAP@100": 30.2307,
+      "nDCG@100": 33.0604
+     },
+     "paper_value": 33.06
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-large-zs_test_in_dapfam-zs-large-s384.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 43.3333,
+      "P@100": 7.5389,
+      "R@100": 49.0759,
+      "MAP@100": 31.4585,
+      "nDCG@100": 38.0371
+     },
+     "paper_value": 38.04
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-large-zs_test_out_dapfam-zs-large-s384.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 0.7246,
+      "P@100": 0.8043,
+      "R@100": 14.4184,
+      "MAP@100": 2.2827,
+      "nDCG@100": 5.0311
+     },
+     "paper_value": 5.03
+    }
+   }
+  },
+  {
+   "system": "REIGN base-l3 + GTE-base @s512 (zero-shot)",
+   "reproduce_tag": "dapfam-ft",
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": 512,
+   "checkpoint": "reign-base-l3_gn-gte-base_val-selected",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-reign-base-l3_zs_gte-base_c512s512_dapfam-ft.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 40.107,
+      "P@100": 7.7166,
+      "R@100": 38.5829,
+      "MAP@100": 31.2582,
+      "nDCG@100": 32.6771
+     },
+     "paper_value": 32.68
+    }
+   }
+  },
+  {
+   "system": "REIGN small-l2 + GTE-small @s384 (zero-shot)",
+   "reproduce_tag": "dapfam-zs-small-l2-gte-small-s384",
+   "gn_model": "thenlper/gte-small",
+   "chunk_size": 512,
+   "stride": 384,
+   "checkpoint": "reign-small-l2_gn-gte-small_s384_val-selected",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-small-zs_test_dapfam-zs-small-l2-gte-small-s384.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 39.0374,
+      "P@100": 7.262,
+      "R@100": 36.3102,
+      "MAP@100": 29.3897,
+      "nDCG@100": 30.6773
+     },
+     "paper_value": 30.68
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-small-zs_test_in_dapfam-zs-small-l2-gte-small-s384.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 40.0,
+      "P@100": 7.0556,
+      "R@100": 46.7278,
+      "MAP@100": 30.3701,
+      "nDCG@100": 35.7225
+     },
+     "paper_value": 35.72
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-small-zs_test_out_dapfam-zs-small-l2-gte-small-s384.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 0.7246,
+      "P@100": 0.6377,
+      "R@100": 10.6866,
+      "MAP@100": 2.4012,
+      "nDCG@100": 4.2314
+     },
+     "paper_value": 4.23
+    }
+   }
+  },
+  {
+   "system": "REIGN small-l2 + GTE-small @s512 (zero-shot)",
+   "reproduce_tag": "dapfam-zs-small-l2-gte-small-s512",
+   "gn_model": "thenlper/gte-small",
+   "chunk_size": 512,
+   "stride": 512,
+   "checkpoint": "reign-small-l2_gn-gte-small_s384_val-selected",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-small-zs_test_dapfam-zs-small-l2-gte-small-s512.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 35.2941,
+      "P@100": 7.262,
+      "R@100": 36.3102,
+      "MAP@100": 29.3267,
+      "nDCG@100": 30.5958
+     },
+     "paper_value": 30.6
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-small-zs_test_in_dapfam-zs-small-l2-gte-small-s512.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 36.1111,
+      "P@100": 7.0278,
+      "R@100": 46.4604,
+      "MAP@100": 30.3077,
+      "nDCG@100": 35.5313
+     },
+     "paper_value": 35.53
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-small-zs_test_out_dapfam-zs-small-l2-gte-small-s512.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 0.7246,
+      "P@100": 0.6739,
+      "R@100": 12.1025,
+      "MAP@100": 2.5454,
+      "nDCG@100": 4.5729
+     },
+     "paper_value": 4.57
+    }
+   }
+  },
+  {
+   "system": "REIGN small-l2 + GTE-base @s384 (zero-shot)",
+   "reproduce_tag": "dapfam-zs-small-l2-gte-base-s384",
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": 384,
+   "checkpoint": "reign-small-l2_gn-gte-base_val-selected",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-base-zs_test_dapfam-zs-small-l2-gte-base-s384.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 39.0374,
+      "P@100": 7.6898,
+      "R@100": 38.4492,
+      "MAP@100": 29.7389,
+      "nDCG@100": 31.924
+     },
+     "paper_value": 31.92
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-base-zs_test_in_dapfam-zs-small-l2-gte-base-s384.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 40.0,
+      "P@100": 7.4278,
+      "R@100": 48.837,
+      "MAP@100": 30.7739,
+      "nDCG@100": 37.0538
+     },
+     "paper_value": 37.05
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-base-zs_test_out_dapfam-zs-small-l2-gte-base-s384.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 0.7246,
+      "P@100": 0.7319,
+      "R@100": 13.3133,
+      "MAP@100": 2.4279,
+      "nDCG@100": 4.8881
+     },
+     "paper_value": 4.89
+    }
+   }
+  },
+  {
+   "system": "REIGN small-l2 + GTE-base @s512 (zero-shot)",
+   "reproduce_tag": "dapfam-zs-small-l2-gte-base-s512",
+   "gn_model": "thenlper/gte-base",
+   "chunk_size": 512,
+   "stride": 512,
+   "checkpoint": "reign-small-l2_gn-gte-base_val-selected",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-base-zs_test_dapfam-zs-small-l2-gte-base-s512.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 35.8289,
+      "P@100": 7.6684,
+      "R@100": 38.3422,
+      "MAP@100": 28.7622,
+      "nDCG@100": 31.68
+     },
+     "paper_value": 31.68
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-base-zs_test_in_dapfam-zs-small-l2-gte-base-s512.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 36.6667,
+      "P@100": 7.4111,
+      "R@100": 48.6101,
+      "MAP@100": 29.8263,
+      "nDCG@100": 36.7581
+     },
+     "paper_value": 36.76
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-base-zs_test_out_dapfam-zs-small-l2-gte-base-s512.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 0.7246,
+      "P@100": 0.7246,
+      "R@100": 13.5654,
+      "MAP@100": 2.4852,
+      "nDCG@100": 4.9959
+     },
+     "paper_value": 5.0
+    }
+   }
+  },
+  {
+   "system": "REIGN small-l2 + GTE-large @s384 (zero-shot)",
+   "reproduce_tag": "dapfam-zs-small-l2-gte-large-s384",
+   "gn_model": "thenlper/gte-large",
+   "chunk_size": 512,
+   "stride": 384,
+   "checkpoint": "reign-small-l2_gn-gte-large_val-selected",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-large-zs_test_dapfam-zs-small-l2-gte-large-s384.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 37.4332,
+      "P@100": 7.7968,
+      "R@100": 38.984,
+      "MAP@100": 29.5825,
+      "nDCG@100": 32.5459
+     },
+     "paper_value": 32.55
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-large-zs_test_in_dapfam-zs-small-l2-gte-large-s384.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 38.3333,
+      "P@100": 7.5278,
+      "R@100": 49.0323,
+      "MAP@100": 31.0177,
+      "nDCG@100": 37.3367
+     },
+     "paper_value": 37.34
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-large-zs_test_out_dapfam-zs-small-l2-gte-large-s384.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 0.7246,
+      "P@100": 0.7464,
+      "R@100": 14.5477,
+      "MAP@100": 2.4049,
+      "nDCG@100": 5.1131
+     },
+     "paper_value": 5.11
+    }
+   }
+  },
+  {
+   "system": "REIGN small-l2 + GTE-large @s512 (zero-shot)",
+   "reproduce_tag": "dapfam-zs-small-l2-gte-large-s512",
+   "gn_model": "thenlper/gte-large",
+   "chunk_size": 512,
+   "stride": 512,
+   "checkpoint": "reign-small-l2_gn-gte-large_val-selected",
+   "splits": {
+    "test": {
+     "source_artifact": "results/reign-gte-large-zs_test_dapfam-zs-small-l2-gte-large-s512.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 37.9679,
+      "P@100": 7.8503,
+      "R@100": 39.2513,
+      "MAP@100": 29.6067,
+      "nDCG@100": 32.6444
+     },
+     "paper_value": 32.64
+    },
+    "test_in": {
+     "source_artifact": "results/reign-gte-large-zs_test_in_dapfam-zs-small-l2-gte-large-s512.json",
+     "self_matches_dropped": 16,
+     "metrics_pct": {
+      "P@1": 38.8889,
+      "P@100": 7.5722,
+      "R@100": 49.2552,
+      "MAP@100": 30.9715,
+      "nDCG@100": 37.4121
+     },
+     "paper_value": 37.41
+    },
+    "test_out": {
+     "source_artifact": "results/reign-gte-large-zs_test_out_dapfam-zs-small-l2-gte-large-s512.json",
+     "self_matches_dropped": 12,
+     "metrics_pct": {
+      "P@1": 0.7246,
+      "P@100": 0.7609,
+      "R@100": 14.9196,
+      "MAP@100": 2.4084,
+      "nDCG@100": 5.211
+     },
+     "paper_value": 5.21
+    }
+   }
+  }
+ ]
+}

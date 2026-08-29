@@ -1,0 +1,34 @@
+\begin{table}[t]
+\centering
+\small
+\caption{\textbf{Measured inference cost} on GoodWiki-Long (500 documents, 100 queries), single RTX~4090 (24\,GB), otherwise-idle GPU. Latency is end-to-end per query (encode + retrieve). REIGN is shown with the Guidance Network run per query (\emph{uncached}) and with its chunk embeddings served from disk (\emph{cached}). Jina-v3 measured at batch 4 (batch 8 exceeds 24\,GB); all other dense rows at batch 8.}
+\label{tab:measured_efficiency}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{System} & \textbf{Index (s)} & \textbf{ms/query} & \textbf{Peak GPU (GB)} \\
+\midrule
+\multicolumn{4}{l}{\emph{Sparse lexical}}\\
+BM25 & 0.2 & 6.5 & -- \\
+TF-IDF & 0.1 & 1.1 & -- \\
+\multicolumn{4}{l}{\emph{Native long-context dense (truncate 8K)}}\\
+BGE-M3 & 37.6 & 430.3 & 9.80 \\
+Jina-Embeddings-v3 & 26.0 & 336.7 & 18.90 \\
+Stella-en-1.5B-v5 & 30.6 & 318.9 & 14.34 \\
+Nomic-Embed-v1.5 & 13.4 & 160.5 & 4.81 \\
+\multicolumn{4}{l}{\emph{Bare GN (chunked mean-pool, 512)}}\\
+GTE-small (chunked) & 4.1 & 23.0 & 0.23 \\
+GTE-base (chunked) & 7.7 & 42.7 & 0.61 \\
+GTE-large (chunked) & 21.6 & 121.4 & 1.56 \\
+BGE-base (chunked) & 7.7 & 42.9 & 0.61 \\
+BGE-large (chunked) & 21.6 & 121.4 & 1.56 \\
+\multicolumn{4}{l}{\emph{REIGN, uncached GN (cold cache)}}\\
+REIGN + GTE-small & 3.3 & 19.8 & 0.35 \\
+REIGN + GTE-base & 6.6 & 39.7 & 0.76 \\
+REIGN + GTE-large & 19.9 & 118.2 & 1.73 \\
+\multicolumn{4}{l}{\emph{REIGN, cached GN embeddings (warm)}}\\
+REIGN + GTE-small & 0.2 & 0.4 & 0.24 \\
+REIGN + GTE-base & 0.2 & 0.5 & 0.55 \\
+REIGN + GTE-large & 0.2 & 0.5 & 1.45 \\
+\bottomrule
+\end{tabular}
+\end{table}

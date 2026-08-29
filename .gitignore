@@ -1,0 +1,75 @@
+# --- Byte-compiled / optimized ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# --- Distribution / packaging ---
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+sdist/
+wheels/
+*.egg-info/
+*.egg
+MANIFEST
+
+# --- Testing / coverage ---
+.pytest_cache/
+.tox/
+.nox/
+.cache
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+*.cover
+
+# --- Type checkers / linters ---
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.ruff_cache/
+
+# --- Environments ---
+.env
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# --- Data, models, and run artifacts ---
+models/
+data/
+logs/
+lightning_logs/
+mteb_results/
+outputs/
+
+# --- Caches and large binaries ---
+.reign_cache/
+*.ckpt
+*.npz
+*.h5
+*.hdf5
+
+# --- Notebooks ---
+.ipynb_checkpoints/
+
+# --- Editors / OS ---
+.idea/
+.vscode/
+.DS_Store
+nohup.out
+
+# --- Evaluation outputs ---
+# Run outputs stay local; the reference numbers shipped with the repo are tracked.
+# Keep this block last so the re-inclusions win over the patterns above.
+results/*
+!results/reference/
+!results/reference/**
