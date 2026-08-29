@@ -52,7 +52,7 @@
   --shadow: 0 1px 2px rgba(16, 16, 20, 0.05);
 }
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #101216;
     --surface: #171a20;
     --surface-2: #1c1f26;
@@ -75,6 +75,29 @@
     --rule: #22262e;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   }
+}
+:root[data-theme="dark"] {
+  --bg: #101216;
+  --surface: #171a20;
+  --surface-2: #1c1f26;
+  --figure-bg: #ffffff;
+  --text: #dfe1e6;
+  --heading: #f2f3f5;
+  --muted: #a2a6b0;
+  --faint: #7e838e;
+  --border: #262a33;
+  --border-strong: #333844;
+  --accent: #8ab4ff;
+  --accent-hover: #a8c8ff;
+  --btn-bg: #1a1e25;
+  --btn-fg: #e2e4e9;
+  --btn-hover-bg: #232830;
+  --btn-disabled-bg: #171a20;
+  --btn-disabled-fg: #6a6f7a;
+  --code-bg: #14171c;
+  --code-fg: #d6d9df;
+  --rule: #22262e;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 * { box-sizing: border-box; }
@@ -312,6 +335,76 @@ pre.bib {
   tab-size: 2;
 }
 
+/* ---------- theme toggle ---------- */
+
+.theme-toggle {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 50;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.theme-toggle:hover { background: var(--btn-hover-bg); border-color: var(--faint); }
+.theme-toggle svg { width: 18px; height: 18px; }
+
+/* ---------- results table ---------- */
+
+figure.table-fig { text-align: left; margin: 6px 0 34px; }
+.tbl-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+table.results {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 480px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+table.results th,
+table.results td {
+  padding: 7px 16px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+table.results th:first-child,
+table.results td:first-child { text-align: left; }
+table.results thead th {
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-strong);
+}
+table.results td { border-top: 1px solid var(--rule); background: var(--bg); }
+table.results tr.group td {
+  background: var(--surface-2);
+  color: var(--muted);
+  font-style: italic;
+  font-size: 0.8rem;
+  padding: 5px 16px;
+}
+table.results tr.reign td {
+  background: var(--surface);
+  background: color-mix(in srgb, var(--accent) 7%, var(--bg));
+}
+table.results b { font-weight: 700; color: var(--heading); }
+
 /* ---------- footer ---------- */
 
 footer {
@@ -345,6 +438,11 @@ footer .copyright { font-size: 0.8rem; color: var(--faint); margin: 18px 0 0; }
 </style>
 </head>
 <body>
+
+<button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme">
+  <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/></svg>
+</button>
 
 <header class="hero">
   <div class="wrap">
@@ -426,6 +524,45 @@ footer .copyright { font-size: 0.8rem; color: var(--faint); margin: 18px 0 0; }
       </div>
     </div>
 
+    <figure class="table-fig">
+      <div class="tbl-wrap">
+        <table class="results">
+          <thead>
+            <tr><th>System</th><th>Params</th><th>nDCG@10</th><th>&Delta;</th></tr>
+          </thead>
+          <tbody>
+            <tr class="group"><td colspan="4">Sparse lexical</td></tr>
+            <tr><td>BM25</td><td>&ndash;</td><td><b>76.82</b></td><td>&ndash;</td></tr>
+            <tr><td>TF-IDF</td><td>&ndash;</td><td>74.19</td><td>&ndash;</td></tr>
+            <tr class="group"><td colspan="4">Native long-context dense (truncate to 8K)</td></tr>
+            <tr><td>BGE-M3</td><td>568M</td><td>67.21</td><td>&ndash;</td></tr>
+            <tr><td>Jina-Embeddings-v3</td><td>572M</td><td>63.93</td><td>&ndash;</td></tr>
+            <tr><td>Stella-en-1.5B-v5</td><td>1.54B</td><td>63.66</td><td>&ndash;</td></tr>
+            <tr><td>Nomic-Embed-v1.5&#8202;<sup>&#8225;</sup></td><td>137M</td><td>11.05</td><td>&ndash;</td></tr>
+            <tr class="group"><td colspan="4">Bare GN (truncated, 512)</td></tr>
+            <tr><td>GTE-small</td><td>33M</td><td>62.37</td><td>&ndash;</td></tr>
+            <tr><td>GTE-base</td><td>110M</td><td>63.48</td><td>&ndash;</td></tr>
+            <tr><td>GTE-large</td><td>335M</td><td>63.58</td><td>&ndash;</td></tr>
+            <tr><td>BGE-base</td><td>110M</td><td>61.95</td><td>&ndash;</td></tr>
+            <tr><td>BGE-large</td><td>335M</td><td>63.12</td><td>&ndash;</td></tr>
+            <tr class="group"><td colspan="4">Bare GN (chunked mean-pool, 512)</td></tr>
+            <tr><td>GTE-small</td><td>33M</td><td>65.10</td><td>+2.73</td></tr>
+            <tr><td>GTE-base</td><td>110M</td><td>65.36</td><td>+1.88</td></tr>
+            <tr><td>GTE-large</td><td>335M</td><td>65.94</td><td>+2.36</td></tr>
+            <tr><td>BGE-base</td><td>110M</td><td>64.07</td><td>+2.12</td></tr>
+            <tr><td>BGE-large</td><td>335M</td><td>64.79</td><td>+1.67</td></tr>
+            <tr class="group"><td colspan="4">REIGN (this work)</td></tr>
+            <tr class="reign"><td>REIGN + GTE-small</td><td>55M</td><td>67.31</td><td><b>+4.94</b></td></tr>
+            <tr class="reign"><td>REIGN + BGE-base</td><td>132M</td><td>65.17</td><td>+3.22</td></tr>
+            <tr class="reign"><td>REIGN + GTE-base</td><td>132M</td><td>66.03</td><td>+2.55</td></tr>
+            <tr class="reign"><td>REIGN + BGE-large</td><td>357M</td><td>66.45</td><td>+3.33</td></tr>
+            <tr class="reign"><td>REIGN + GTE-large</td><td>357M</td><td>66.73</td><td>+3.15</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figcaption><b>GoodWiki-Long test.</b> 5,854 queries against a 53,562-document corpus, top-10 retrieval; nDCG@10 in percent. &Delta; is the lift over the truncated baseline of the same GN. REIGN uses the base-l3 encoder (22M) at the best-performing stride per GN; best per column in bold. <sup>&#8225;</sup>&#8202;Nomic-Embed-v1.5's native training context is 2K tokens; its 8K ceiling is RoPE-extended and marked experimental by its authors, and it collapses on documents whose median length already exceeds 5K words.</figcaption>
+    </figure>
+
     <figure>
       <span class="frame"><img src="static/pareto_params_vs_ndcg.png" alt="Three scatter plots of total parameters (log scale) against retrieval quality for GoodWiki-Long, DAPFAM, and LoCo, comparing REIGN against chunked and native long-context dense baselines." width="1800" height="1415"></span>
       <figcaption><b>Parameter efficiency across three long-document retrieval regimes.</b> Total parameters (log scale) versus the primary nDCG metric; solid lines connect the three guidance-network scales (small / base / large), so the REIGN cross-chunk encoder is visible against its own chunked mean-pool baseline. The picture is task-conditional: REIGN sits above the chunked baseline at every scale on GoodWiki-Long, matches or exceeds it on DAPFAM, and on LoCo the bare chunked baseline is at or above REIGN except at the small-GN end.</figcaption>
@@ -465,6 +602,41 @@ footer .copyright { font-size: 0.8rem; color: var(--faint); margin: 18px 0 0; }
 </div>
 
 <script>
+(function () {
+  var KEY = 'reign-theme';
+  var root = document.documentElement;
+  var btn = document.getElementById('theme-toggle');
+  var sun = document.getElementById('icon-sun');
+  var moon = document.getElementById('icon-moon');
+  if (!btn || !sun || !moon) return;
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function stored() {
+    try { return localStorage.getItem(KEY); } catch (e) { return null; }
+  }
+  function resolved() {
+    var s = stored();
+    if (s === 'dark' || s === 'light') return s;
+    return mq.matches ? 'dark' : 'light';
+  }
+  function paint() {
+    var s = stored();
+    if (s === 'dark' || s === 'light') root.setAttribute('data-theme', s);
+    else root.removeAttribute('data-theme');
+    var dark = resolved() === 'dark';
+    sun.style.display = dark ? 'block' : 'none';
+    moon.style.display = dark ? 'none' : 'block';
+    btn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+  }
+  btn.addEventListener('click', function () {
+    var next = resolved() === 'dark' ? 'light' : 'dark';
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+    paint();
+  });
+  if (mq.addEventListener) mq.addEventListener('change', paint);
+  paint();
+})();
+
 (function () {
   var btn = document.getElementById('copy-bib');
   var label = document.getElementById('copy-label');
