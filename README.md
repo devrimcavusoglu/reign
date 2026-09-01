@@ -145,18 +145,21 @@ The rephrasals are machine-generated with GPT-4o-mini and are marked as syntheti
 - Code: <https://github.com/devrimcavusoglu/reign>
 - Dataset: <https://huggingface.co/datasets/devrim/goodwiki_long_synthetic_ir>
 - Models: <https://huggingface.co/collections/devrim/reign-emnlp-2026-findings-6a9202c43943622462e6ed9c>
-- Paper: *REIGN: Refurbished Embeddings with Integrated Guidance Networks for Efficient Context-Length Scaling*, Findings of the ACL: EMNLP 2026 (to appear). arXiv link coming soon.
+- Paper: *REIGN: Refurbished Embeddings with Integrated Guidance Networks for Efficient Context-Length Scaling*, Findings of the ACL: EMNLP 2026 (to appear). Preprint: <https://arxiv.org/abs/2608.29899>
 
 ## Citation
 
 ```bibtex
 @inproceedings{cavusoglu2026reign,
-  title     = {{REIGN}: Refurbished Embeddings with Integrated Guidance Networks for Efficient Context-Length Scaling},
-  author    = {{\c{C}}avu{\c{s}}o{\u{g}}lu, Devrim and Akba{\c{s}}, Emre},
-  booktitle = {Findings of the Association for Computational Linguistics: {EMNLP} 2026},
-  year      = {2026},
-  publisher = {Association for Computational Linguistics},
-  note      = {To appear}
+  title         = {{REIGN}: Refurbished Embeddings with Integrated Guidance Networks for Efficient Context-Length Scaling},
+  author        = {{\c{C}}avu{\c{s}}o{\u{g}}lu, Devrim and Akba{\c{s}}, Emre},
+  booktitle     = {Findings of the Association for Computational Linguistics: {EMNLP} 2026},
+  year          = {2026},
+  publisher     = {Association for Computational Linguistics},
+  eprint        = {2608.29899},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note          = {To appear}
 }
 ```
 
