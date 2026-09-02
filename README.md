@@ -187,7 +187,7 @@ The rephrasals are machine-generated with GPT-4o-mini and are marked as syntheti
 }
 ```
 
-Authors: Devrim Çavuşoğlu (Middle East Technical University; OBSS AI), Emre Akbaş (Middle East Technical University). Correspondence: devrim.cavusoglu@metu.edu.tr
+Authors: Devrim Çavuşoğlu (Middle East Technical University; OBSS AI), Emre Akbaş (Middle East Technical University).
 
 ## License
 
