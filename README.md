@@ -3,7 +3,7 @@
 **Refurbished Embeddings with Integrated Guidance Networks for Efficient Context-Length Scaling** — a long-document bi-encoder that reads sequences of cached chunk embeddings instead of tokens.
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![Findings of EMNLP 2026](https://img.shields.io/badge/Findings_of_EMNLP-2026-b31b1b.svg)](https://devrimcavusoglu.github.io/reign)
+[![EMNLP 2026 (Findings)](https://img.shields.io/badge/EMNLP-2026_%28Findings%29-b31b1b.svg)](https://devrimcavusoglu.github.io/reign)
 [![Dataset on HF](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-goodwiki__long__synthetic__ir-yellow.svg)](https://huggingface.co/datasets/devrim/goodwiki_long_synthetic_ir)
 [![Project page](https://img.shields.io/badge/Project-page-informational.svg)](https://devrimcavusoglu.github.io/reign)
 
@@ -145,7 +145,7 @@ The rephrasals are machine-generated with GPT-4o-mini and are marked as syntheti
 - Code: <https://github.com/devrimcavusoglu/reign>
 - Dataset: <https://huggingface.co/datasets/devrim/goodwiki_long_synthetic_ir>
 - Models: <https://huggingface.co/collections/devrim/reign-emnlp-2026-findings-6a9202c43943622462e6ed9c>
-- Paper: *REIGN: Refurbished Embeddings with Integrated Guidance Networks for Efficient Context-Length Scaling*, to appear at Findings of EMNLP 2026. Preprint: <https://arxiv.org/abs/2608.29899>
+- Paper: *REIGN: Refurbished Embeddings with Integrated Guidance Networks for Efficient Context-Length Scaling*, to appear at EMNLP 2026 (Findings). Preprint: <https://arxiv.org/abs/2608.29899>
 
 ## Citation
 
