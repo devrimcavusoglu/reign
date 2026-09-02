@@ -1,6 +1,6 @@
 # REIGN
 
-**Refurbished Embeddings with Integrated Guidance Networks for Efficient Context-Length Scaling** — a long-document bi-encoder that reads sequences of cached chunk embeddings instead of tokens.
+**Refurbished Embeddings with Integrated Guidance Networks for Efficient Context-Length Scaling.** A long-document bi-encoder that reads sequences of cached chunk embeddings instead of tokens.
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![EMNLP 2026 (Findings)](https://img.shields.io/badge/EMNLP-2026_%28Findings%29-b31b1b.svg)](https://devrimcavusoglu.github.io/reign)
@@ -9,11 +9,19 @@
 
 ## What is REIGN
 
-REIGN is a contrastively trained bi-encoder that operates on a sequence of contextualised chunk embeddings produced by a frozen pretrained text embedder — the Guidance Network (GN) — rather than on raw sub-word tokens. A document is split by a sliding window of size *K* (typically 512, matching the GN's context window) advanced with stride *S ≤ K*; each window is encoded by the GN, and a small Transformer aggregates the resulting embedding sequence as a permutation-equivariant set function with no positional encoding, average-pooled into one document vector. Because the GN is frozen and its outputs are deterministic, they are content-hashed and cached to disk, which moves the token-level cost out of the training loop entirely.
+REIGN is a contrastively trained bi-encoder. Instead of raw sub-word tokens, it reads a sequence of contextualised chunk embeddings produced by a frozen pretrained text embedder, the Guidance Network (GN).
 
-REIGN targets multi-chunk inputs and primarily document-to-document retrieval; single-chunk inputs are served by the guidance network (GN) alone.
+A document is split by a sliding window of size *K* (typically 512, matching the GN's context window) advanced with stride *S ≤ K*. Each window goes through the GN, and a small Transformer aggregates the resulting embedding sequence as a permutation-equivariant set function with no positional encoding, then average-pools it into one document vector.
 
-On the DAPFAM patent task, a 357M REIGN+GTE-large is statistically indistinguishable from dense baselines 1.6–4.3× larger under paired tests (paper Table 5); on LoCo, REIGN comes within 0.65 nDCG@10 of a 20×-larger model, though the bare chunked GTE-large mean-pool is the Pareto-best LoCo configuration the paper observes (71.38 macro against REIGN's 70.77) and the REIGN encoder marginally detracts there. With cached GN chunk embeddings REIGN answers queries 49–229× faster than re-running the GN per query, and is at parity — not faster — when uncached. Peak GPU memory spans 0.24–1.73 GB across REIGN configurations, against 4.8–18.9 GB for the native long-context dense baselines (Jina-v3 measured at batch 4).
+Because the GN is frozen and its outputs are deterministic, they are content-hashed and cached to disk. That moves the token-level cost out of the training loop entirely.
+
+REIGN targets multi-chunk inputs and primarily document-to-document retrieval. Single-chunk inputs are served by the GN alone.
+
+On the DAPFAM patent task, a 357M REIGN+GTE-large is statistically indistinguishable from dense baselines 1.6–4.3× larger under paired tests (paper Table 5).
+
+On LoCo, REIGN comes within 0.65 nDCG@10 of a 20×-larger model. The bare chunked GTE-large mean-pool is still the Pareto-best LoCo configuration the paper observes (71.38 macro against REIGN's 70.77), and the REIGN encoder marginally detracts there.
+
+With cached GN chunk embeddings, REIGN answers queries 49–229× faster than re-running the GN per query. Uncached, it is at parity rather than faster. Peak GPU memory spans 0.24–1.73 GB across REIGN configurations, against 4.8–18.9 GB for the native long-context dense baselines (Jina-v3 measured at batch 4).
 
 ## Install
 
@@ -49,15 +57,17 @@ emb = encoder.encode(docs, batch_size=8)   # (2, hidden_size), L2-normalised
 print(float(np.dot(emb[0], emb[1])))       # cosine similarity
 ```
 
-`checkpoint_path` points at a checkpoint directory containing `config.json` and `model.safetensors`. Loading by local path always works; loading by Hugging Face Hub identifier works for any checkpoint published under [huggingface.co/devrim](https://huggingface.co/devrim), where the Hub identifiers mirror the checkpoint names in the model zoo below. `chunk_size` is the GN's sliding-window size — 512 for every released checkpoint, matching the GN's context window — and `stride` controls the overlap, with `stride == chunk_size` giving non-overlapping chunking. Both should match the values the checkpoint was trained and evaluated at.
+`checkpoint_path` points at a checkpoint directory containing `config.json` and `model.safetensors`. Loading by local path always works. Loading by Hugging Face Hub identifier works for any checkpoint published under [huggingface.co/devrim](https://huggingface.co/devrim), where the Hub identifiers mirror the checkpoint names in the model zoo below.
+
+`chunk_size` is the GN's sliding-window size, 512 for every released checkpoint, matching the GN's context window. `stride` controls the overlap, and `stride == chunk_size` gives non-overlapping chunking. Both should match the values the checkpoint was trained and evaluated at.
 
 For the lower-level surface, `ReignModel` (a `PreTrainedModel` consuming `inputs_embeds`) and `ReignFeatureExtractor` (the GN wrapper, with the on-disk embedding cache) are importable directly from `reign` and `reign.feature_extractor`.
 
 ## Model zoo
 
-The zoo is the released-weights inventory, not the list of runs any one stage performs: `scripts/reproduce.sh` evaluates the headline row set by default and reaches the rest through row-set overrides, which [docs/REPRODUCING.md](docs/REPRODUCING.md) maps table by table.
+The zoo is the inventory of released weights, not the list of runs any one stage performs. `scripts/reproduce.sh` evaluates the headline row set by default and reaches the rest through row-set overrides, which [docs/REPRODUCING.md](docs/REPRODUCING.md) maps table by table.
 
-Encoder sizes are the paper's configuration sweep: `tiny-l1` 0.56M, `small-l2` 3.85M, `base-l3` 22.45M, `large-l4` 52.49M parameters. `base-l3` is the paper-default encoder used in the headline tables. Where a checkpoint name carries a stride tag (`_s<N>_`, `_st-<N>_`), it identifies the chunking stride that run was trained at; the evaluation-time stride is a command-line argument (`--gn-stride`), and Tables 2 and 4 report the best-performing stride per GN as stated in their captions, while Table 3 reports both strides.
+Encoder sizes are the paper's configuration sweep: `tiny-l1` 0.56M, `small-l2` 3.85M, `base-l3` 22.45M, `large-l4` 52.49M parameters. `base-l3` is the paper-default encoder used in the headline tables. Where a checkpoint name carries a stride tag (`_s<N>_`, `_st-<N>_`), it identifies the chunking stride that run was trained at. The evaluation-time stride is a command-line argument (`--gn-stride`). Tables 2 and 4 report the best-performing stride per GN, as stated in their captions, while Table 3 reports both strides.
 
 | Checkpoint | REIGN encoder | GN backbone | Stride tag | Appears in |
 | --- | --- | --- | --- | --- |
@@ -85,13 +95,19 @@ Encoder sizes are the paper's configuration sweep: `tiny-l1` 0.56M, `small-l2` 3
 | `reign-large-l4_gn-gte-base_s384_val-selected` | large-l4 | `thenlper/gte-base` | 384 | Table 7 |
 | `reign-large-l4_gn-gte-large_s384_val-selected` | large-l4 | `thenlper/gte-large` | 384 | Table 7 |
 
-A dash in *Appears in* marks a checkpoint that is released but not individually reported in the paper. The four `st-<N>` rows are a train-time stride sweep on `small-l2` + GTE-large; only `st-512` is reported (the Table 7 `small-l2` × GTE-large cell), and Table 8's `small-l2` + GTE-large rows at both strides come from the untagged `reign-small-l2_gn-gte-large_val-selected`. Table 11 reports measured latency and memory per Guidance Network rather than per checkpoint, so the paper names no checkpoint there; the three rows credited with it are the ones `reproduce.sh e1-efficiency` measures.
+A dash in *Appears in* marks a checkpoint that is released but not individually reported in the paper.
 
-The `_val-selected` suffix marks best-validation checkpoint selection on nDCG@10 over the `val` qrels split. Each checkpoint directory holds a `best/` and a `last/` snapshot; use `best/`.
+The four `st-<N>` rows are a train-time stride sweep on `small-l2` + GTE-large. Only `st-512` is reported, in the Table 7 `small-l2` × GTE-large cell. Table 8's `small-l2` + GTE-large rows at both strides come from the untagged `reign-small-l2_gn-gte-large_val-selected`.
+
+Table 11 reports measured latency and memory per Guidance Network rather than per checkpoint, so the paper names no checkpoint there. The three rows credited with it are the ones `reproduce.sh e1-efficiency` measures.
+
+The `_val-selected` suffix marks best-validation checkpoint selection on nDCG@10 over the `val` qrels split. Each checkpoint directory holds a `best/` and a `last/` snapshot. Use `best/`.
 
 ### DAPFAM fine-tuned family
 
-The patent fine-tuning study (paper §5.3, protocol in Appendix J) produces a second family, all `base-l3` over a GTE backbone, named `reign-base-l3_gn-<gn>_dapfam-<variant>-c<chunk>s<stride>`. `ft` is the plain cold-start fine-tune, `ftwarm` warm-starts from the GoodWiki-Long-trained checkpoint, `ftreg-r<N>` are the regularised warm-start cells, and `ftcold-long` is the same cold start on a 60-epoch schedule. `reproduce.sh main-dapfam` trains the headline run, `reign-base-l3_gn-gte-base_dapfam-ft-c512s512`, by default; the other ten come from `scripts/dapfam_finetune.sh` under the per-checkpoint overrides tabulated in [docs/REPRODUCING.md](docs/REPRODUCING.md).
+The patent fine-tuning study (paper §5.3, protocol in Appendix J) produces a second family, all `base-l3` over a GTE backbone, named `reign-base-l3_gn-<gn>_dapfam-<variant>-c<chunk>s<stride>`. `ft` is the plain cold-start fine-tune, `ftwarm` warm-starts from the GoodWiki-Long-trained checkpoint, `ftreg-r<N>` are the regularised warm-start cells, and `ftcold-long` is the same cold start on a 60-epoch schedule.
+
+`reproduce.sh main-dapfam` trains the headline run, `reign-base-l3_gn-gte-base_dapfam-ft-c512s512`, by default. The other ten come from `scripts/dapfam_finetune.sh`, under the per-checkpoint overrides tabulated in [docs/REPRODUCING.md](docs/REPRODUCING.md).
 
 | Checkpoint | GN backbone | Chunk / stride |
 | --- | --- | --- |
@@ -107,13 +123,19 @@ The patent fine-tuning study (paper §5.3, protocol in Appendix J) produces a se
 | `reign-base-l3_gn-gte-large_dapfam-ftwarm-c512s384` | `thenlper/gte-large` | 512 / 384 |
 | `reign-base-l3_gn-gte-large_dapfam-ftwarm-c512s512` | `thenlper/gte-large` | 512 / 512 |
 
-The DAPFAM fine-tunes use InfoNCE at temperature 0.07 by design, not the released cosine recipe; see [docs/TRAINING.md](docs/TRAINING.md).
+The DAPFAM fine-tunes deliberately use InfoNCE at temperature 0.07 instead of the released cosine recipe. See [docs/TRAINING.md](docs/TRAINING.md).
 
 ## Evaluation and reproducing
 
-`scripts/reproduce.sh` is the entry point. It exposes one stage per paper artifact: `main-goodwiki`, `main-loco`, `main-dapfam` (Tables 2–4), `e1-efficiency` (Appendix G, Table 11), `e2-significance` (Table 5), `e4-pe-ablation` (Appendix E), `e5-objective-ablation` (Appendix I), and `mteb` (Appendix B). Each stage takes no positional arguments, is configured through environment variables, writes under `results/`, and is re-runnable — a completed row is skipped rather than recomputed. Run a stage as `bash scripts/reproduce.sh main-goodwiki`. Per-stage commands, expected outputs, runtime and hardware budgets, and the row-set overrides that reproduce the appendix sweeps are in [docs/REPRODUCING.md](docs/REPRODUCING.md).
+`scripts/reproduce.sh` is the entry point. It exposes one stage per paper artifact: `main-goodwiki`, `main-loco`, `main-dapfam` (Tables 2–4), `e1-efficiency` (Appendix G, Table 11), `e2-significance` (Table 5), `e4-pe-ablation` (Appendix E), `e5-objective-ablation` (Appendix I), and `mteb` (Appendix B).
 
-`results/reference/` ships fourteen curated outputs to diff against, one directory per stage: aggregate metrics for GoodWiki-Long (Tables 2, 7), LoCo (Tables 3, 8), DAPFAM (Tables 4, 8, and the fine-tuned family) and MTEB (Table 6), plus the rendered Table 11 and Table 12, the Table 5 significance output, and the three Table 9 ablation arms. Each file, and what it lets you diff, is enumerated in [docs/REPRODUCING.md](docs/REPRODUCING.md#what-ships-in-resultsreference) — including what deliberately does not ship.
+Each stage takes no positional arguments, is configured through environment variables, and writes under `results/`. Stages are re-runnable: a completed row is skipped rather than recomputed. Run one as `bash scripts/reproduce.sh main-goodwiki`.
+
+Per-stage commands, expected outputs, runtime and hardware budgets, and the row-set overrides that reproduce the appendix sweeps are in [docs/REPRODUCING.md](docs/REPRODUCING.md).
+
+`results/reference/` ships fourteen curated outputs to diff against, one directory per stage: aggregate metrics for GoodWiki-Long (Tables 2, 7), LoCo (Tables 3, 8), DAPFAM (Tables 4, 8, and the fine-tuned family) and MTEB (Table 6), plus the rendered Table 11 and Table 12, the Table 5 significance output, and the three Table 9 ablation arms.
+
+[docs/REPRODUCING.md](docs/REPRODUCING.md#what-ships-in-resultsreference) enumerates each file and what it lets you diff, along with the outputs that deliberately do not ship.
 
 ## Training
 
@@ -131,11 +153,13 @@ python -m reign.train \
   --seed 42 --device cuda --output-dir reign-base-l3_gn-gte-small_s512_val-selected
 ```
 
-**Two training protocols exist and their numbers are not comparable.** The released checkpoints use the cosine recipe above; the Appendix E and Appendix I ablation arms use a separate controlled protocol (InfoNCE at τ = 0.07, batch 48, 20 epochs). Read [docs/TRAINING.md](docs/TRAINING.md) before training or comparing anything.
+**Two training protocols exist and their numbers are not comparable.** The released checkpoints use the cosine recipe above. The Appendix E and Appendix I ablation arms use a separate controlled protocol (InfoNCE at τ = 0.07, batch 48, 20 epochs). Read [docs/TRAINING.md](docs/TRAINING.md) before training or comparing anything.
 
 ## Dataset
 
-[`devrim/goodwiki_long_synthetic_ir`](https://huggingface.co/datasets/devrim/goodwiki_long_synthetic_ir) is a long-document retrieval benchmark derived from GoodWiki, a cleaned English Wikipedia release, filtered to articles over 16,000 characters — documents averaging 5,065 words. Queries are the original articles (17,854 of them); the corpus (53,562 documents) is one LLM-rephrased positive per query plus roughly two topical distractors, giving graded relevance where score 2 marks the rephrasal and score 1 a distractor. It ships in the canonical BEIR/MTEB tri-config layout (`corpus`, `queries`, `default`) with query-disjoint train/val/test qrels splits.
+[`devrim/goodwiki_long_synthetic_ir`](https://huggingface.co/datasets/devrim/goodwiki_long_synthetic_ir) is a long-document retrieval benchmark derived from GoodWiki, a cleaned English Wikipedia release. It is filtered to articles over 16,000 characters, which average 5,065 words.
+
+Queries are the original articles, 17,854 of them. The corpus of 53,562 documents holds one LLM-rephrased positive per query plus roughly two topical distractors, giving graded relevance where score 2 marks the rephrasal and score 1 a distractor. It ships in the canonical BEIR/MTEB tri-config layout (`corpus`, `queries`, `default`) with query-disjoint train/val/test qrels splits.
 
 The rephrasals are machine-generated with GPT-4o-mini and are marked as synthetic in the dataset card.
 
